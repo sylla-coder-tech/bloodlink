@@ -1,0 +1,138 @@
+.page-header {
+  margin-bottom: 28px;
+}
+
+.page-header h1 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.page-header p {
+  color: var(--text3);
+  font-size: 15px;
+}
+
+.requests-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.request-card {
+  border-left: 4px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.request-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.request-card.request-urgente {
+  border-left-color: var(--red);
+}
+
+.request-card.request-moyenne {
+  border-left-color: var(--orange);
+}
+
+.request-card.request-basse {
+  border-left-color: var(--blue);
+}
+
+.request-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.request-header h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.urgence {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.blood-type {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  background: var(--red-pale);
+  color: var(--red);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.request-body {
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+.request-body p {
+  margin-bottom: 8px;
+  color: var(--text2);
+}
+
+.request-body strong {
+  color: var(--text);
+}
+
+.request-footer {
+  display: flex;
+  gap: 10px;
+}
+
+.request-footer button {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .page-header h1 {
+    font-size: 22px;
+  }
+
+  .requests-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-header h1 {
+    font-size: 18px;
+  }
+
+  .page-header p {
+    font-size: 13px;
+  }
+
+  .requests-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .request-footer {
+    flex-direction: column;
+  }
+
+  .blood-type {
+    min-width: 45px;
+    height: 45px;
+    font-size: 12px;
+  }
+}

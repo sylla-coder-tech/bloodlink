@@ -1,0 +1,175 @@
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.left {
+  background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
+  color: white;
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 32px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.logo-icon {
+  font-size: 56px;
+}
+
+.logo h1 {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.left p {
+  font-size: 18px;
+  opacity: 0.95;
+  max-width: 320px;
+  line-height: 1.6;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+}
+
+.card {
+  width: 100%;
+  max-width: 440px;
+}
+
+.card-header h2 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.card-header p {
+  color: var(--text3);
+  font-size: 15px;
+  margin-bottom: 32px;
+}
+
+form {
+  margin-bottom: 24px;
+}
+
+.alert {
+  background: var(--red-pale);
+  color: var(--red-dark);
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  font-size: 14px;
+  border: 1px solid var(--red-light);
+}
+
+.divider {
+  text-align: center;
+  color: var(--text3);
+  margin: 24px 0;
+  font-size: 14px;
+  position: relative;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: var(--border);
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+.footer {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text2);
+}
+
+.footer a {
+  color: var(--red);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 1024px) {
+  .left {
+    padding: 32px;
+  }
+
+  .right {
+    padding: 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  .left {
+    display: none;
+  }
+
+  .right {
+    padding: 24px;
+  }
+
+  .card {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .right {
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .card-header h2 {
+    font-size: 24px;
+  }
+
+  .logo h1 {
+    font-size: 28px;
+  }
+
+  .left p {
+    font-size: 16px;
+  }
+}

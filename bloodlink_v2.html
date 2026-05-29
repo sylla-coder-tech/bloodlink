@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BloodLink — Kɛnɛya Digital Guinée</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red:#C0392B; --red-light:#E74C3C; --red-pale:#FDECEA; --red-dark:#922B21;
+  --bg:#F7F8FA; --white:#FFFFFF; --text:#1A1D23; --text2:#4A5568; --text3:#8A96A8;
+  --border:#E2E8F0; --green:#1E8449; --green-pale:#E8F8EE;
+  --orange:#D35400; --orange-pale:#FDEBD0;
+  --blue:#1A5276; --blue-pale:#D6EAF8;
+  --radius:12px; --shadow:0 1px 4px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.05); --shadow-md:0 4px 24px rgba(0,0,0,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.app{display:flex;flex-direction:column;min-height:100vh}
+.page{display:none;flex:1}
+.page.active{display:flex;flex-direction:column}
+.nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-logo{display:flex;align-items:center;gap:8px;font-family:'Sora',sans-serif;font-weight:700;font-size:19px;color:var(--red);cursor:pointer}
+.logo-drop{width:30px;height:30px;display:flex;align-items:center;justify-content:center}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.nav-user{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2)}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--red-pale);color:var(--red);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center}
+.burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.burger span{width:22px;height:2px;background:var(--text);border-radius:2px;transition:.2s}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .18s;text-decoration:none;font-family:inherit;white-space:nowrap}
+.btn-primary{background:var(--red);color:#fff}.btn-primary:hover{background:var(--red-dark);transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--red);border:1.5px solid var(--red)}.btn-outline:hover{background:var(--red-pale)}
+.btn-ghost{background:transparent;color:var(--text2);border:1.5px solid var(--border)}.btn-ghost:hover{background:var(--bg)}
+.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#145A32}
+.btn-call{background:#1A8C3E;color:#fff}.btn-call:hover{background:#146830}
+.btn-sm{padding:6px 12px;font-size:12px}.btn-lg{padding:13px 28px;font-size:15px}
+.btn-block{width:100%;justify-content:center}
+.card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:20px}
+.card-lg{padding:28px}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
+.form-input{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;color:var(--text);background:var(--white);transition:border .15s;outline:none}
+.form-input:focus{border-color:var(--red)}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%238A96A8'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-hint{font-size:12px;color:var(--text3);margin-top:4px}
+.form-error{font-size:12px;color:var(--red);margin-top:4px;display:none;font-weight:500}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600}
+.badge-red{background:var(--red-pale);color:var(--red)}
+.badge-green{background:var(--green-pale);color:var(--green)}
+.badge-orange{background:var(--orange-pale);color:var(--orange)}
+.badge-blue{background:var(--blue-pale);color:var(--blue)}
+.badge-gray{background:#F1F3F5;color:var(--text2)}
+.badge-gold{background:#FEF9E7;color:#784212;border:1px solid #F0B27A}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:16px}
+.stat-value{font-size:28px;font-weight:700;font-family:'Sora',sans-serif}
+.stat-label{font-size:12px;color:var(--text3);margin-top:2px}
+.stat-icon{font-size:20px;margin-bottom:8px}
+.layout-sidebar{display:flex;flex:1;min-height:0}
+.sidebar{width:220px;background:var(--white);border-right:1px solid var(--border);padding:16px 0;flex-shrink:0;overflow-y:auto}
+.sidebar-section{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;padding:16px 20px 6px}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:14px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .15s;border-left:3px solid transparent}
+.sidebar-item:hover{background:var(--bg);color:var(--text)}
+.sidebar-item.active{background:var(--red-pale);color:var(--red);border-left-color:var(--red)}
+.sidebar-icon{font-size:16px;flex-shrink:0}
+.sidebar-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px}
+.main-content{flex:1;padding:28px;overflow-y:auto}
+.alert{padding:12px 16px;border-radius:8px;font-size:14px;margin-bottom:16px;display:flex;align-items:flex-start;gap:8px}
+.alert-red{background:var(--red-pale);color:var(--red-dark);border:1px solid #F1948A}
+.alert-green{background:var(--green-pale);color:#145A32;border:1px solid #82E0AA}
+.alert-orange{background:var(--orange-pale);color:#784212;border:1px solid #FAD7A0}
+.alert-blue{background:var(--blue-pale);color:#1A5276;border:1px solid #AED6F1}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;padding:10px 12px;font-size:11px;font-weight:700;color:var(--text3);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.05em}
+td{padding:12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg)}
+.blood-type{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:38px;border-radius:8px;background:var(--red-pale);color:var(--red);font-weight:700;font-size:13px;padding:0 6px}
+.demand-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:16px;margin-bottom:12px;transition:box-shadow .15s}
+.demand-card:hover{box-shadow:var(--shadow-md)}
+.demand-card.urgente{border-left:3px solid var(--red)}
+.demand-card.moyenne{border-left:3px solid var(--orange)}
+.demand-card.basse{border-left:3px solid var(--blue)}
+.demand-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.demand-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;font-size:13px;color:var(--text2)}
+#toast{position:fixed;bottom:24px;right:24px;background:#1A1D23;color:#fff;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;z-index:9999;opacity:0;transform:translateY(12px);transition:all .25s;pointer-events:none;max-width:340px;line-height:1.4}
+#toast.show{opacity:1;transform:translateY(0)}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:none;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:16px;padding:28px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
+.modal-title{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;margin-bottom:20px}
+.section-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;gap:12px}
+.section-title{font-family:'Sora',sans-serif;font-size:20px;font-weight:700}
+.section-sub{font-size:14px;color:var(--text3);margin-top:3px}
+.switch{position:relative;display:inline-block;width:44px;height:24px}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;cursor:pointer;inset:0;background:var(--border);border-radius:24px;transition:.3s}
+.slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.3s}
+input:checked+.slider{background:var(--green)}
+input:checked+.slider:before{transform:translateX(20px)}
+.search-bar{display:flex;align-items:center;gap:8px;background:var(--white);border:1.5px solid var(--border);border-radius:8px;padding:8px 14px;margin-bottom:16px}
+.search-bar input{border:none;outline:none;font-size:14px;font-family:inherit;flex:1;background:transparent;color:var(--text)}
+.search-bar span{color:var(--text3);font-size:16px}
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.filter-chip{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--border);background:var(--white);color:var(--text2);cursor:pointer;transition:all .15s}
+.filter-chip.active{background:var(--red-pale);border-color:var(--red);color:var(--red)}
+.filter-chip:hover{border-color:var(--red-light)}
+.hero{background:linear-gradient(140deg,#C0392B 0%,#7B241C 100%);color:white;padding:64px 24px 48px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-40px;right:-40px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.04)}
+.hero::after{content:'';position:absolute;bottom:-60px;left:20%;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.03)}
+.hero-title{font-family:'Sora',sans-serif;font-size:clamp(26px,5vw,44px);font-weight:700;margin-bottom:14px;line-height:1.2;position:relative}
+.hero-sub{font-size:16px;opacity:.9;max-width:520px;margin:0 auto 28px;line-height:1.7;position:relative}
+.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.12);border-radius:12px;overflow:hidden;margin-top:44px;position:relative}
+.hero-stat{background:rgba(255,255,255,.08);padding:20px;text-align:center}
+.hero-stat-val{font-family:'Sora',sans-serif;font-size:30px;font-weight:700}
+.hero-stat-lbl{font-size:12px;opacity:.75;margin-top:2px}
+.features{padding:48px 24px;max-width:940px;margin:0 auto}
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;margin-top:32px}
+.feature-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:24px}
+.feature-icon{width:44px;height:44px;border-radius:10px;background:var(--red-pale);color:var(--red);font-size:20px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.feature-title{font-weight:700;font-size:15px;margin-bottom:6px}
+.feature-desc{font-size:13px;color:var(--text2);line-height:1.6}
+.auth-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 16px}
+.auth-box{background:var(--white);border-radius:16px;border:1px solid var(--border);padding:32px;width:100%;max-width:420px;box-shadow:var(--shadow-md)}
+.auth-title{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;text-align:center;margin-bottom:4px}
+.auth-sub{font-size:14px;color:var(--text3);text-align:center;margin-bottom:24px}
+.auth-tabs{display:flex;background:var(--bg);border-radius:8px;padding:3px;margin-bottom:24px}
+.auth-tab{flex:1;padding:8px;border-radius:6px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;color:var(--text3);transition:all .15s}
+.auth-tab.active{background:var(--white);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.divider{display:flex;align-items:center;gap:12px;margin:16px 0;color:var(--text3);font-size:12px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.match-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:10px;transition:box-shadow .15s}
+.match-card:hover{box-shadow:var(--shadow-md)}
+.match-pct{font-family:'Sora',sans-serif;font-size:22px;font-weight:700;color:var(--green)}
+.match-lbl{font-size:11px;color:var(--text3)}
+.progress-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--red);border-radius:3px;transition:width .5s}
+.empty{text-align:center;padding:48px 24px;color:var(--text3)}
+.empty-icon{font-size:40px;margin-bottom:12px}
+.empty-title{font-weight:600;color:var(--text2);margin-bottom:6px;font-size:16px}
+.steps{display:flex;align-items:center;margin-bottom:28px}
+.step{display:flex;align-items:center;gap:8px}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--border);color:var(--text3);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step.active .step-num{background:var(--red);color:#fff}
+.step.done .step-num{background:var(--green);color:#fff}
+.step-label{font-size:12px;font-weight:600;color:var(--text3)}
+.step.active .step-label{color:var(--red)}
+.step-line{flex:1;height:2px;background:var(--border);margin:0 6px;min-width:16px}
+.step.done .step-line{background:var(--green)}
+.highlight-box{background:var(--red-pale);border:1.5px solid #F1948A;border-radius:10px;padding:14px;margin-bottom:16px}
+.hb-title{font-weight:700;color:var(--red-dark);font-size:14px;margin-bottom:3px}
+.hb-text{font-size:13px;color:var(--red-dark)}
+.footer{border-top:1px solid var(--border);padding:24px;text-align:center;font-size:13px;color:var(--text3);background:var(--white);line-height:1.8}
+.confirm-box{background:var(--white);border-radius:12px;padding:24px;width:100%;max-width:360px;text-align:center}
+.confirm-title{font-weight:700;font-size:16px;margin-bottom:8px}
+.confirm-text{font-size:14px;color:var(--text2);margin-bottom:20px}
+.donor-profile-card{background:linear-gradient(135deg,var(--red) 0%,var(--red-dark) 100%);color:#fff;border-radius:var(--radius);padding:20px;margin-bottom:20px}
+/* CHATBOT */
+.chatbot-wrap{position:fixed;bottom:24px;right:24px;z-index:400}
+.chatbot-btn{width:56px;height:56px;border-radius:50%;background:var(--red);color:#fff;border:none;font-size:22px;cursor:pointer;box-shadow:var(--shadow-md);display:flex;align-items:center;justify-content:center;transition:transform .2s}
+.chatbot-btn:hover{transform:scale(1.1)}
+.chatbot-panel{position:absolute;bottom:70px;right:0;width:320px;background:var(--white);border-radius:16px;border:1px solid var(--border);box-shadow:var(--shadow-md);display:none;flex-direction:column;overflow:hidden}
+.chatbot-panel.open{display:flex}
+.chatbot-header{background:var(--red);color:#fff;padding:14px 16px;font-weight:600;font-size:14px;display:flex;justify-content:space-between;align-items:center}
+.chatbot-messages{flex:1;padding:12px;min-height:200px;max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+.chatbot-input-row{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border)}
+.chatbot-input-row input{flex:1;border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;outline:none;font-family:inherit}
+.chatbot-input-row input:focus{border-color:var(--red)}
+.chatbot-input-row button{background:var(--red);color:#fff;border:none;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:14px}
+@media(max-width:700px){
+  .form-row{grid-template-columns:1fr}
+  .sidebar{display:none;position:fixed;top:62px;left:0;bottom:0;z-index:90;width:260px;box-shadow:4px 0 20px rgba(0,0,0,.15)}
+  .sidebar.open{display:flex;flex-direction:column}
+  .main-content{padding:16px}
+  .hero{padding:40px 16px 36px}
+  .hero-stats{grid-template-columns:1fr}
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .nav{padding:0 14px}
+  .section-header{flex-direction:column;align-items:flex-start;gap:10px}
+  .burger{display:flex}
+  .nav-actions .btn-ghost{display:none}
+  .chatbot-panel{width:280px}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+<div id="toast"></div>
+
+<!-- MODAL: Réponse donneur -->
+<div class="modal-overlay" id="modal-response">
+  <div class="modal">
+    <div class="modal-title">🩸 Répondre à la demande urgente</div>
+    <div id="modal-demand-info"></div>
+    <p style="font-size:14px;color:var(--text2);margin-bottom:20px;line-height:1.6;">Êtes-vous disponible pour vous rendre dans la structure et effectuer un don ?</p>
+    <div style="display:flex;gap:10px;flex-direction:column;">
+      <button class="btn btn-green btn-block" style="padding:12px;" onclick="respondDemand('disponible')">✅ Je suis disponible — je me déplace</button>
+      <button class="btn btn-ghost btn-block" onclick="respondDemand('indisponible')">❌ Je ne suis pas disponible</button>
+      <button class="btn btn-ghost btn-block" style="color:var(--text3);" onclick="closeModal('modal-response')">Annuler</button>
+    </div>
+    <div style="margin-top:16px;padding:12px;background:var(--bg);border-radius:8px;font-size:12px;color:var(--text3);">
+      ℹ️ BloodLink ne gère pas les dossiers médicaux. La vérification de votre aptitude est du ressort de la structure de santé.
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Confirmer clôture -->
+<div class="modal-overlay" id="modal-confirm">
+  <div class="confirm-box">
+    <div style="font-size:36px;margin-bottom:12px;">⚠️</div>
+    <div class="confirm-title">Clôturer cette demande ?</div>
+    <div class="confirm-text">Cette action est définitive. La demande n'acceptera plus de nouvelles réponses.</div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-ghost btn-block" onclick="closeModal('modal-confirm')">Annuler</button>
+      <button class="btn btn-primary btn-block" onclick="confirmClose()">Clôturer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== PAGE: ACCUEIL ========== -->
+<div class="page active" id="page-home">
+  <nav class="nav">
+    <div class="nav-logo" onclick="goPage('page-home')">
+      <div class="logo-drop"><svg width="28" height="32" viewBox="0 0 28 32" fill="none"><path d="M14 1C14 1 2 11.5 2 19.5a12 12 0 0024 0C26 11.5 14 1 14 1z" fill="#C0392B"/><path d="M14 10C14 10 7 16.5 7 20.5a7 7 0 0014 0C21 16.5 14 10 14 10z" fill="#922B21" opacity=".55"/></svg></div>
+      Blood<span style="color:var(--text)">Link</span>
+    </div>
+    <div class="nav-actions">
+      <button class="btn btn-ghost btn-sm" onclick="goPage('page-login')">Connexion</button>
+      <button class="btn btn-primary btn-sm" onclick="goPage('page-register-choice')">S'inscrire</button>
+    </div>
+  </nav>
+  <div class="hero">
+    <div style="max-width:680px;margin:0 auto;text-align:center;">
+      <div style="font-size:12px;font-weight:700;opacity:.65;letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px;">Kɛnɛya Digital Guinée · Conakry</div>
+      <div class="hero-title">Chaque don de sang<br>sauve une vie à Conakry</div>
+      <div class="hero-sub">BloodLink met en relation les donneurs volontaires et les structures de santé en cas d'urgence. Simple, rapide, 100% mobile.</div>
+      <div class="hero-actions">
+        <button class="btn btn-lg" style="background:#fff;color:var(--red);font-size:14px;" onclick="goPage('page-register-donneur')">🩸 Devenir donneur</button>
+        <button class="btn btn-lg" style="background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.35);font-size:14px;" onclick="goPage('page-register-structure')">🏥 Inscrire mon établissement</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-val" id="home-stat-donneurs">...</div><div class="hero-stat-lbl">Donneurs inscrits</div></div>
+        <div class="hero-stat"><div class="hero-stat-val" id="home-stat-structures">...</div><div class="hero-stat-lbl">Structures partenaires</div></div>
+        <div class="hero-stat"><div class="hero-stat-val" id="home-stat-taux">...</div><div class="hero-stat-lbl">Demandes résolues</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="features">
+    <div style="text-align:center;">
+      <div style="font-family:'Sora',sans-serif;font-size:24px;font-weight:700;margin-bottom:8px;">Comment BloodLink fonctionne ?</div>
+      <div style="font-size:15px;color:var(--text2);">Conçu pour le contexte guinéen — simple sur mobile, rapide en situation d'urgence</div>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card"><div class="feature-icon">📱</div><div class="feature-title">Mobile d'abord</div><div class="feature-desc">Conçu pour les smartphones. Accessible depuis Kaloum jusqu'à Matoto.</div></div>
+      <div class="feature-card"><div class="feature-icon">🎯</div><div class="feature-title">Matching IA</div><div class="feature-desc">L'IA Groq identifie automatiquement les donneurs compatibles avec un score 0-100 et une explication.</div></div>
+      <div class="feature-card"><div class="feature-icon">🔔</div><div class="feature-title">Alertes ciblées</div><div class="feature-desc">Recevez uniquement les demandes correspondant à votre profil.</div></div>
+      <div class="feature-card"><div class="feature-icon">🏥</div><div class="feature-title">Structures validées</div><div class="feature-desc">Seuls les établissements vérifiés par BloodLink peuvent publier des demandes.</div></div>
+    </div>
+  </div>
+  <div style="background:var(--white);border-top:1px solid var(--border);padding:36px 24px;">
+    <div style="max-width:600px;margin:0 auto;text-align:center;">
+      <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;">Tous les groupes sanguins</div>
+      <div style="font-size:14px;color:var(--text2);margin-bottom:20px;">BloodLink gère tous les groupes. Le groupe <strong>O−</strong> est le donneur universel.</div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;">
+        <span class="badge badge-red" style="font-size:14px;padding:8px 16px;">A+</span>
+        <span class="badge badge-red" style="font-size:14px;padding:8px 16px;">A−</span>
+        <span class="badge badge-red" style="font-size:14px;padding:8px 16px;">B+</span>
+        <span class="badge badge-red" style="font-size:14px;padding:8px 16px;">B−</span>
+        <span class="badge badge-red" style="font-size:14px;padding:8px 16px;">AB+</span>
+        <span class="badge badge-red" style="font-size:14px;padding:8px 16px;">AB−</span>
+        <span class="badge badge-red" style="font-size:14px;padding:8px 16px;">O+</span>
+        <span class="badge badge-gold" style="font-size:14px;padding:8px 16px;">O− 🌟</span>
+      </div>
+    </div>
+  </div>
+  <footer class="footer">
+    <div><strong style="color:var(--text);">BloodLink</strong> — Kɛnɛya Digital Guinée</div>
+    <div>En partenariat avec le <strong>Centre National de Transfusion Sanguine (CNTS)</strong> et le Ministère de la Santé de Guinée</div>
+    <div style="margin-top:6px;font-size:12px;">Conakry, République de Guinée · © 2025</div>
+  </footer>
+</div>
+
+<!-- ========== CHOIX INSCRIPTION ========== -->
+<div class="page" id="page-register-choice">
+  <nav class="nav">
+    <div class="nav-logo" onclick="goPage('page-home')"><div class="logo-drop"><svg width="24" height="28" viewBox="0 0 28 32" fill="none"><path d="M14 1C14 1 2 11.5 2 19.5a12 12 0 0024 0C26 11.5 14 1 14 1z" fill="#C0392B"/></svg></div>BloodLink</div>
+    <button class="btn btn-ghost btn-sm" onclick="goPage('page-home')">← Retour</button>
+  </nav>
+  <div class="auth-wrap">
+    <div style="width:100%;max-width:500px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:40px;margin-bottom:12px;">🩸</div>
+        <div style="font-family:'Sora',sans-serif;font-size:24px;font-weight:700;margin-bottom:8px;">Rejoindre BloodLink</div>
+        <div style="font-size:15px;color:var(--text2);">Choisissez votre type de compte</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="card" style="cursor:pointer;text-align:center;padding:28px 16px;border-radius:14px;" onmouseover="this.style.borderColor='var(--red)'" onmouseout="this.style.borderColor='var(--border)'" onclick="goPage('page-register-donneur')">
+          <div style="font-size:44px;margin-bottom:12px;">👤</div>
+          <div style="font-weight:700;font-size:16px;margin-bottom:8px;">Donneur</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.5;">Je suis volontaire pour donner mon sang</div>
+          <button class="btn btn-primary" style="margin-top:16px;width:100%;">Je m'inscris →</button>
+        </div>
+        <div class="card" style="cursor:pointer;text-align:center;padding:28px 16px;border-radius:14px;" onmouseover="this.style.borderColor='var(--red)'" onmouseout="this.style.borderColor='var(--border)'" onclick="goPage('page-register-structure')">
+          <div style="font-size:44px;margin-bottom:12px;">🏥</div>
+          <div style="font-weight:700;font-size:16px;margin-bottom:8px;">Établissement</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.5;">Mon établissement a besoin de donneurs</div>
+          <button class="btn btn-outline" style="margin-top:16px;width:100%;">Inscrire →</button>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:20px;font-size:14px;color:var(--text3);">Déjà un compte ? <span style="color:var(--red);font-weight:600;cursor:pointer;" onclick="goPage('page-login')">Se connecter</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== INSCRIPTION DONNEUR ========== -->
+<div class="page" id="page-register-donneur">
+  <nav class="nav">
+    <div class="nav-logo" onclick="goPage('page-home')"><div class="logo-drop"><svg width="24" height="28" viewBox="0 0 28 32" fill="none"><path d="M14 1C14 1 2 11.5 2 19.5a12 12 0 0024 0C26 11.5 14 1 14 1z" fill="#C0392B"/></svg></div>BloodLink</div>
+    <button class="btn btn-ghost btn-sm" onclick="goPage('page-register-choice')">← Retour</button>
+  </nav>
+  <div style="flex:1;padding:24px 16px;overflow-y:auto;">
+    <div style="max-width:520px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:24px;">
+        <div style="font-size:32px;margin-bottom:8px;">🩸</div>
+        <div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:700;">Créer un compte donneur</div>
+        <div style="font-size:14px;color:var(--text3);margin-top:4px;">Rejoignez BloodLink — Gratuit & Rapide</div>
+      </div>
+      <div class="card card-lg">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Prénom *</label><input class="form-input" id="d-prenom" type="text" placeholder="Ex: Mamadou"></div>
+          <div class="form-group"><label class="form-label">Nom *</label><input class="form-input" id="d-nom" type="text" placeholder="Ex: Diallo"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Sexe *</label><select class="form-input form-select" id="d-sexe"><option value="">Choisir</option><option>Masculin</option><option>Féminin</option></select></div>
+          <div class="form-group"><label class="form-label">Téléphone *</label><input class="form-input" id="d-tel" type="tel" placeholder="6XX XX XX XX"><div class="form-hint">Orange, MTN, Cellcom</div></div>
+        </div>
+        <div class="form-group"><label class="form-label">Email (facultatif)</label><input class="form-input" id="d-email" type="email" placeholder="votre@email.com"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Groupe sanguin *</label>
+            <select class="form-input form-select" id="d-blood" onchange="checkUniversal(this)">
+              <option value="">Choisir</option>
+              <option>A+</option><option>A−</option><option>B+</option><option>B−</option>
+              <option>AB+</option><option>AB−</option><option>O+</option><option>O−</option>
+            </select>
+            <div id="universal-hint" style="display:none;" class="form-hint">🌟 O− : vous êtes un donneur universel !</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Commune *</label>
+            <select class="form-input form-select" id="d-commune" onchange="updateQuartiers('d-quartier',this.value)">
+              <option value="">Choisir</option>
+              <option>Kaloum</option><option>Dixinn</option><option>Matam</option><option>Ratoma</option><option>Matoto</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Quartier *</label><select class="form-input form-select" id="d-quartier"><option value="">— Choisir la commune d'abord —</option></select></div>
+        <div class="form-group">
+          <label class="form-label">Disponibilité</label>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:6px;padding:12px;background:var(--bg);border-radius:8px;">
+            <label class="switch"><input type="checkbox" id="d-dispo" checked><span class="slider"></span></label>
+            <div><div style="font-size:14px;font-weight:500;">Je suis disponible pour donner</div><div style="font-size:12px;color:var(--text3);">Modifiable à tout moment</div></div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Mot de passe *</label><input class="form-input" id="d-pwd" type="password" placeholder="Min. 6 caractères"></div>
+          <div class="form-group"><label class="form-label">Confirmer *</label><input class="form-input" id="d-pwd2" type="password" placeholder="••••••••"></div>
+        </div>
+        <div class="form-error" id="d-error">⚠️ Remplissez tous les champs obligatoires (*).</div>
+        <button class="btn btn-primary btn-block btn-lg" style="margin-top:8px;" onclick="registerDonneur()">Créer mon compte →</button>
+        <div style="text-align:center;margin-top:12px;font-size:13px;color:var(--text3);">Déjà inscrit ? <span style="color:var(--red);font-weight:600;cursor:pointer;" onclick="goPage('page-login')">Se connecter</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== INSCRIPTION STRUCTURE ========== -->
+<div class="page" id="page-register-structure">
+  <nav class="nav">
+    <div class="nav-logo" onclick="goPage('page-home')"><div class="logo-drop"><svg width="24" height="28" viewBox="0 0 28 32" fill="none"><path d="M14 1C14 1 2 11.5 2 19.5a12 12 0 0024 0C26 11.5 14 1 14 1z" fill="#C0392B"/></svg></div>BloodLink</div>
+    <button class="btn btn-ghost btn-sm" onclick="goPage('page-register-choice')">← Retour</button>
+  </nav>
+  <div style="flex:1;padding:24px 16px;overflow-y:auto;">
+    <div style="max-width:520px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:20px;"><div style="font-size:32px;margin-bottom:8px;">🏥</div><div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:700;">Inscrire un établissement</div></div>
+      <div class="alert alert-orange">⏳ Votre compte sera vérifié sous <strong>24 à 48h</strong> avant activation.</div>
+      <div class="card card-lg">
+        <div class="form-group"><label class="form-label">Nom de la structure *</label><input class="form-input" id="s-nom" type="text" placeholder="Ex: Clinique Ambroise Paré"></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Type *</label><select class="form-input form-select" id="s-type"><option value="">Choisir</option><option>Hôpital national</option><option>Hôpital préfectoral</option><option>Clinique privée</option><option>Centre de santé communautaire</option><option>Banque de sang (CNTS)</option><option>Maternité</option><option>Autre</option></select></div>
+          <div class="form-group"><label class="form-label">Commune *</label><select class="form-input form-select" id="s-commune" onchange="updateQuartiers('s-quartier',this.value)"><option value="">Choisir</option><option>Kaloum</option><option>Dixinn</option><option>Matam</option><option>Ratoma</option><option>Matoto</option></select></div>
+        </div>
+        <div class="form-group"><label class="form-label">Quartier</label><select class="form-input form-select" id="s-quartier"><option value="">— Choisir la commune d'abord —</option></select></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Responsable *</label><input class="form-input" id="s-responsable" type="text" placeholder="Dr. Prénom Nom"></div>
+          <div class="form-group"><label class="form-label">Téléphone *</label><input class="form-input" id="s-tel" type="tel" placeholder="6XX XX XX XX"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Email *</label><input class="form-input" id="s-email" type="email" placeholder="contact@structure.gn"></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Mot de passe *</label><input class="form-input" id="s-pwd" type="password" placeholder="••••••••"></div>
+          <div class="form-group"><label class="form-label">Confirmer *</label><input class="form-input" id="s-pwd2" type="password" placeholder="••••••••"></div>
+        </div>
+        <div class="form-error" id="s-error">⚠️ Remplissez tous les champs obligatoires (*).</div>
+        <button class="btn btn-primary btn-block btn-lg" style="margin-top:8px;" onclick="registerStructure()">Soumettre ma demande →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CONNEXION ========== -->
+<div class="page" id="page-login">
+  <nav class="nav">
+    <div class="nav-logo" onclick="goPage('page-home')"><div class="logo-drop"><svg width="24" height="28" viewBox="0 0 28 32" fill="none"><path d="M14 1C14 1 2 11.5 2 19.5a12 12 0 0024 0C26 11.5 14 1 14 1z" fill="#C0392B"/></svg></div>BloodLink</div>
+    <button class="btn btn-ghost btn-sm" onclick="goPage('page-home')">← Accueil</button>
+  </nav>
+  <div class="auth-wrap">
+    <div class="auth-box">
+      <div style="text-align:center;margin-bottom:20px;"><div style="font-size:36px;">🩸</div></div>
+      <div class="auth-title">Connexion</div>
+      <div class="auth-sub">Accédez à votre espace BloodLink</div>
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="login-email" type="email" placeholder="votre@email.com"></div>
+      <div class="form-group"><label class="form-label">Mot de passe</label><input class="form-input" id="login-pwd" type="password" placeholder="••••••••"></div>
+      <div class="form-error" id="login-error">⚠️ Email ou mot de passe incorrect.</div>
+      <button class="btn btn-primary btn-block btn-lg" style="margin-top:4px;" onclick="doLogin()">Se connecter →</button>
+      <div class="divider">ou</div>
+      <button class="btn btn-ghost btn-block" onclick="goPage('page-register-choice')">Créer un compte</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== DASHBOARD DONNEUR ========== -->
+<div class="page" id="page-dashboard-donneur">
+  <nav class="nav">
+    <div class="nav-logo" onclick="goPage('page-home')"><div class="logo-drop"><svg width="24" height="28" viewBox="0 0 28 32" fill="none"><path d="M14 1C14 1 2 11.5 2 19.5a12 12 0 0024 0C26 11.5 14 1 14 1z" fill="#C0392B"/></svg></div>BloodLink</div>
+    <div class="nav-user">
+      <div class="avatar" id="nav-donneur-av">?</div>
+      <span style="font-size:13px;" id="nav-donneur-name">...</span>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Déconnexion</button>
+      <div class="burger" onclick="toggleSidebar()"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+  <div class="layout-sidebar">
+    <div class="sidebar" id="sidebar-donneur">
+      <div class="sidebar-section">Menu principal</div>
+      <div class="sidebar-item active" onclick="showDonneurSection('overview',this)"><span class="sidebar-icon">📊</span> Tableau de bord</div>
+      <div class="sidebar-item" onclick="showDonneurSection('demandes',this)"><span class="sidebar-icon">🩸</span> Demandes urgentes <span class="sidebar-badge" id="d-notif-count">0</span></div>
+      <div class="sidebar-item" onclick="showDonneurSection('mes-reponses',this)"><span class="sidebar-icon">📋</span> Mes réponses</div>
+      <div class="sidebar-section">Compte</div>
+      <div class="sidebar-item" onclick="showDonneurSection('profil',this)"><span class="sidebar-icon">👤</span> Mon profil</div>
+      <div class="sidebar-item" onclick="logout()"><span class="sidebar-icon">🚪</span> Déconnexion</div>
+    </div>
+    <div class="main-content">
+      <div id="d-section-overview">
+        <div class="section-header">
+          <div><div class="section-title">Bonjour, <span id="greet-name">...</span> 👋</div><div class="section-sub">Tableau de bord donneur · Conakry</div></div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:13px;color:var(--text2);">Disponible</span>
+            <label class="switch"><input type="checkbox" id="dispo-main" checked onchange="toggleDispo(this)"><span class="slider"></span></label>
+          </div>
+        </div>
+        <div id="d-universal-banner" style="display:none;background:linear-gradient(135deg,#FEF9E7,#FDEBD0);border:1.5px solid #F0B27A;color:#784212;padding:12px 16px;border-radius:8px;margin-bottom:16px;">
+          🌟 <strong>Vous êtes un donneur universel (O−) !</strong> Votre sang est compatible avec tous les groupes.
+        </div>
+        <div class="stat-grid">
+          <div class="stat-card" style="border-left:3px solid var(--red);"><div class="stat-icon">🩸</div><div class="stat-value" id="d-stat-dons">0</div><div class="stat-label">Dons effectués</div></div>
+          <div class="stat-card" style="border-left:3px solid var(--orange);"><div class="stat-icon">📨</div><div class="stat-value" id="d-stat-recues">0</div><div class="stat-label">Demandes reçues</div></div>
+          <div class="stat-card" style="border-left:3px solid var(--green);"><div class="stat-icon">✅</div><div class="stat-value" id="d-stat-reponses">0</div><div class="stat-label">Réponses envoyées</div></div>
+          <div class="stat-card"><div class="stat-icon">🅰</div><div class="stat-value" id="d-stat-gs" style="font-size:20px;">...</div><div class="stat-label">Groupe sanguin</div></div>
+        </div>
+        <div class="section-header" style="margin-top:24px;">
+          <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;">Demandes compatibles récentes</div>
+          <button class="btn btn-ghost btn-sm" onclick="showDonneurSection('demandes',null)">Tout voir →</button>
+        </div>
+        <div id="d-recent-demands"></div>
+      </div>
+      <div id="d-section-demandes" style="display:none;">
+        <div class="section-header"><div><div class="section-title">Demandes urgentes</div><div class="section-sub" id="d-demandes-sub">Compatibles avec votre profil</div></div></div>
+        <div class="filter-bar">
+          <div class="filter-chip active" onclick="filterDemands('toutes',this)">Toutes</div>
+          <div class="filter-chip" onclick="filterDemands('haute',this)">🔴 Haute urgence</div>
+          <div class="filter-chip" onclick="filterDemands('moyenne',this)">🟡 Moyenne</div>
+          <div class="filter-chip" onclick="filterDemands('disponible',this)">Ouvertes seulement</div>
+        </div>
+        <div id="d-demands-list"></div>
+      </div>
+      <div id="d-section-mes-reponses" style="display:none;">
+        <div class="section-header"><div><div class="section-title">Mes réponses</div><div class="section-sub">Historique de vos réponses aux demandes</div></div></div>
+        <div id="d-reponses-list"><div class="card"><div class="table-wrap"><table><thead><tr><th>Référence</th><th>Structure</th><th>Groupe</th><th>Ma réponse</th><th>Date</th></tr></thead><tbody id="d-reponses-tbody"><tr><td colspan="5" style="text-align:center;color:var(--text3);padding:24px;">Chargement...</td></tr></tbody></table></div></div></div>
+      </div>
+      <div id="d-section-profil" style="display:none;">
+        <div class="section-header">
+          <div><div class="section-title">Mon profil</div><div class="section-sub">Gérez vos informations</div></div>
+          <button class="btn btn-primary btn-sm" onclick="saveProfile()">💾 Sauvegarder</button>
+        </div>
+        <div class="donor-profile-card">
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div style="width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.2);color:#fff;font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center;" id="profile-av-big">?</div>
+            <div>
+              <div style="font-weight:700;font-size:18px;" id="profile-fullname">...</div>
+              <div style="opacity:.8;font-size:14px;margin-top:2px;">Donneur actif · <span id="profile-blood-badge">...</span></div>
+              <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+                <span style="background:rgba(255,255,255,.2);padding:3px 10px;border-radius:20px;font-size:12px;">✓ Compte vérifié</span>
+                <span style="background:rgba(255,255,255,.2);padding:3px 10px;border-radius:20px;font-size:12px;" id="profile-dispo-tag">✅ Disponible</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card card-lg">
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Prénom</label><input class="form-input" id="p-prenom"></div>
+            <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="p-nom"></div>
+          </div>
+          <div class="form-group"><label class="form-label">Téléphone</label><input class="form-input" id="p-tel"></div>
+          <div class="form-group">
+            <label class="form-label">Disponibilité</label>
+            <div style="display:flex;align-items:center;gap:12px;margin-top:6px;padding:12px;background:var(--bg);border-radius:8px;">
+              <label class="switch"><input type="checkbox" id="p-dispo" checked onchange="updateProfileDispo(this)"><span class="slider"></span></label>
+              <div><div style="font-size:14px;font-weight:500;">Je suis disponible pour donner</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== DASHBOARD STRUCTURE ========== -->
+<div class="page" id="page-dashboard-structure">
+  <nav class="nav">
+    <div class="nav-logo" onclick="goPage('page-home')"><div class="logo-drop"><svg width="24" height="28" viewBox="0 0 28 32" fill="none"><path d="M14 1C14 1 2 11.5 2 19.5a12 12 0 0024 0C26 11.5 14 1 14 1z" fill="#C0392B"/></svg></div>BloodLink</div>
+    <div class="nav-user">
+      <span style="font-size:13px;">🏥 <span id="nav-struct-name">...</span></span>
+      <span class="badge badge-green" style="font-size:11px;">✓ Validé</span>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Déconnexion</button>
+      <div class="burger" onclick="toggleSidebar()"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+  <div class="layout-sidebar">
+    <div class="sidebar" id="sidebar-struct">
+      <div class="sidebar-section">Gestion</div>
+      <div class="sidebar-item active" onclick="showStructSection('overview',this)"><span class="sidebar-icon">📊</span> Tableau de bord</div>
+      <div class="sidebar-item" onclick="showStructSection('create-demand',this)"><span class="sidebar-icon">➕</span> Nouvelle demande</div>
+      <div class="sidebar-item" onclick="showStructSection('mes-demandes',this)"><span class="sidebar-icon">📋</span> Mes demandes</div>
+      <div class="sidebar-item" onclick="showStructSection('matching',this)"><span class="sidebar-icon">🎯</span> Résultats matching IA</div>
+      <div class="sidebar-section">Compte</div>
+      <div class="sidebar-item" onclick="logout()"><span class="sidebar-icon">🚪</span> Déconnexion</div>
+    </div>
+    <div class="main-content">
+      <div id="s-section-overview">
+        <div class="section-header">
+          <div><div class="section-title">Tableau de bord</div><div class="section-sub" id="struct-subtitle">...</div></div>
+          <button class="btn btn-primary btn-sm" onclick="showStructSection('create-demand',null)">+ Nouvelle demande</button>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-card" style="border-left:3px solid var(--red);"><div class="stat-icon">📤</div><div class="stat-value" id="s-stat-total">0</div><div class="stat-label">Demandes publiées</div></div>
+          <div class="stat-card" style="border-left:3px solid var(--orange);"><div class="stat-icon">🔴</div><div class="stat-value" id="s-stat-ouvertes">0</div><div class="stat-label">Demandes ouvertes</div></div>
+          <div class="stat-card" style="border-left:3px solid var(--green);"><div class="stat-icon">✅</div><div class="stat-value" id="s-stat-cloturees">0</div><div class="stat-label">Clôturées</div></div>
+          <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="s-stat-donneurs">0</div><div class="stat-label">Donneurs proposés</div></div>
+        </div>
+        <div class="section-header"><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;">Demandes récentes</div><button class="btn btn-ghost btn-sm" onclick="showStructSection('mes-demandes',null)">Tout voir</button></div>
+        <div id="s-recent-list"></div>
+      </div>
+      <div id="s-section-create-demand" style="display:none;">
+        <div class="section-header"><div><div class="section-title">Nouvelle demande urgente</div><div class="section-sub">Renseignez le besoin en sang</div></div></div>
+        <div class="card card-lg" style="max-width:560px;">
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Groupe sanguin *</label><select class="form-input form-select" id="req-blood"><option value="">Choisir</option><option>A+</option><option>A−</option><option>B+</option><option>B−</option><option>AB+</option><option>AB−</option><option>O+</option><option>O−</option></select></div>
+            <div class="form-group"><label class="form-label">Quantité (poches) *</label><input class="form-input" id="req-qty" type="number" min="1" max="20" placeholder="Ex: 2"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Commune *</label><select class="form-input form-select" id="req-commune"><option value="">Choisir</option><option>Kaloum</option><option>Dixinn</option><option>Matam</option><option>Ratoma</option><option>Matoto</option></select></div>
+            <div class="form-group"><label class="form-label">Urgence *</label><select class="form-input form-select" id="req-urgence"><option value="">Choisir</option><option value="haute">🔴 Haute — immédiat</option><option value="moyenne">🟡 Moyenne — sous 24h</option><option value="basse">🔵 Basse — sous 72h</option></select></div>
+          </div>
+          <div class="form-group"><label class="form-label">Date limite *</label><input class="form-input" id="req-date" type="date"></div>
+          <div class="form-group"><label class="form-label">Notes</label><textarea class="form-input" id="req-notes" rows="3" placeholder="Contexte médical..." style="resize:vertical;"></textarea></div>
+          <div class="form-error" id="req-error">⚠️ Remplissez tous les champs obligatoires.</div>
+          <div style="padding:12px;background:var(--blue-pale);border-radius:8px;font-size:13px;color:var(--blue);margin-bottom:16px;">🤖 Après publication, l'IA Groq lancera automatiquement le matching et calculera les scores de compatibilité.</div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-primary" onclick="createDemand()">🚀 Publier la demande</button>
+            <button class="btn btn-ghost" onclick="showStructSection('overview',null)">Annuler</button>
+          </div>
+        </div>
+      </div>
+      <div id="s-section-mes-demandes" style="display:none;">
+        <div class="section-header"><div><div class="section-title">Mes demandes</div></div><button class="btn btn-primary btn-sm" onclick="showStructSection('create-demand',null)">+ Nouvelle</button></div>
+        <div class="filter-bar">
+          <div class="filter-chip active" onclick="filterStructDemands('toutes',this)">Toutes</div>
+          <div class="filter-chip" onclick="filterStructDemands('ouverte',this)">Ouvertes</div>
+          <div class="filter-chip" onclick="filterStructDemands('cloturee',this)">Clôturées</div>
+        </div>
+        <div id="s-demand-list-full"></div>
+      </div>
+      <div id="s-section-matching" style="display:none;">
+        <div class="section-header"><div><div class="section-title">🤖 Matching IA — Groq</div><div class="section-sub">Donneurs compatibles identifiés et scorés par l'IA</div></div></div>
+        <div class="alert alert-green" id="matching-alert">✅ Lancement du matching IA...</div>
+        <div style="margin-bottom:12px;"><div class="search-bar"><span>🔍</span><input placeholder="Rechercher par nom ou quartier..." oninput="filterMatchingLocal(this.value)"></div></div>
+        <div id="matching-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== DASHBOARD ADMIN ========== -->
+<div class="page" id="page-dashboard-admin">
+  <nav class="nav">
+    <div class="nav-logo" onclick="goPage('page-home')"><div class="logo-drop"><svg width="24" height="28" viewBox="0 0 28 32" fill="none"><path d="M14 1C14 1 2 11.5 2 19.5a12 12 0 0024 0C26 11.5 14 1 14 1z" fill="#C0392B"/></svg></div>BloodLink</div>
+    <div class="nav-user">
+      <div class="avatar" style="background:#1A1D23;color:#fff;">A</div>
+      <span style="font-size:13px;">🛡️ Administrateur</span>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Déconnexion</button>
+      <div class="burger" onclick="toggleSidebar()"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+  <div class="layout-sidebar">
+    <div class="sidebar" id="sidebar-admin">
+      <div class="sidebar-section">Administration</div>
+      <div class="sidebar-item active" onclick="showAdminSection('overview',this)"><span class="sidebar-icon">📊</span> Vue globale</div>
+      <div class="sidebar-item" onclick="showAdminSection('structures',this)"><span class="sidebar-icon">🏥</span> Structures <span class="sidebar-badge" id="a-pending-badge">0</span></div>
+      <div class="sidebar-item" onclick="showAdminSection('donneurs',this)"><span class="sidebar-icon">👥</span> Donneurs</div>
+      <div class="sidebar-item" onclick="showAdminSection('demandes-admin',this)"><span class="sidebar-icon">🩸</span> Demandes</div>
+    </div>
+    <div class="main-content">
+      <div id="a-section-overview">
+        <div class="section-header"><div><div class="section-title">Vue globale</div><div class="section-sub">BloodLink · Conakry, République de Guinée</div></div></div>
+        <div class="stat-grid">
+          <div class="stat-card" style="border-left:3px solid var(--red);"><div class="stat-icon">👥</div><div class="stat-value" id="a-stat-donneurs">...</div><div class="stat-label">Total donneurs</div></div>
+          <div class="stat-card" style="border-left:3px solid var(--blue);"><div class="stat-icon">🏥</div><div class="stat-value" id="a-stat-structures">...</div><div class="stat-label">Structures actives</div></div>
+          <div class="stat-card" style="border-left:3px solid var(--orange);"><div class="stat-icon">🔴</div><div class="stat-value" id="a-stat-open">...</div><div class="stat-label">Demandes ouvertes</div></div>
+          <div class="stat-card" style="border-left:3px solid var(--green);"><div class="stat-icon">✅</div><div class="stat-value" id="a-stat-cloturees">...</div><div class="stat-label">Clôturées</div></div>
+          <div class="stat-card" style="border-left:3px solid var(--orange);"><div class="stat-icon">⏳</div><div class="stat-value" id="a-stat-pending">...</div><div class="stat-label">En attente validation</div></div>
+          <div class="stat-card"><div class="stat-icon">📈</div><div class="stat-value" id="a-stat-taux">...</div><div class="stat-label">Taux de résolution</div></div>
+        </div>
+        <div class="alert alert-orange" id="admin-pending-alert" style="display:none;">⏳ Des structures attendent votre validation — <span style="cursor:pointer;text-decoration:underline;font-weight:600;" onclick="showAdminSection('structures',null)">Examiner →</span></div>
+        <div style="margin-top:24px;">
+          <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;margin-bottom:12px;">Répartition par groupe sanguin</div>
+          <div class="card"><div id="blood-chart" style="padding:4px 0;"></div></div>
+        </div>
+        <div style="margin-top:20px;">
+          <div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:700;margin-bottom:12px;">Donneurs par commune</div>
+          <div class="card"><div id="commune-chart" style="padding:4px 0;"></div></div>
+        </div>
+      </div>
+      <div id="a-section-structures" style="display:none;">
+        <div class="section-header"><div><div class="section-title">Gestion des structures</div></div></div>
+        <div class="alert alert-orange">⏳ <strong id="pending-count">0</strong> demande(s) en attente de validation</div>
+        <div class="card"><div class="table-wrap"><table><thead><tr><th>Établissement</th><th>Type</th><th>Commune</th><th>Responsable</th><th>Tél.</th><th>Statut</th><th>Action</th></tr></thead><tbody id="admin-struct-tbody"></tbody></table></div></div>
+      </div>
+      <div id="a-section-donneurs" style="display:none;">
+        <div class="section-header"><div><div class="section-title">Gestion des donneurs</div></div></div>
+        <div class="card"><div class="table-wrap"><table><thead><tr><th>Nom complet</th><th>Téléphone</th><th>Groupe</th><th>Commune</th><th>Quartier</th><th>Disponible</th><th>Dons</th></tr></thead><tbody id="admin-donneurs-tbody"></tbody></table></div></div>
+      </div>
+      <div id="a-section-demandes-admin" style="display:none;">
+        <div class="section-header"><div><div class="section-title">Toutes les demandes</div></div></div>
+        <div class="card"><div class="table-wrap"><table><thead><tr><th>Réf.</th><th>Établissement</th><th>Groupe</th><th>Qté</th><th>Urgence</th><th>Commune</th><th>Statut</th><th>Date</th></tr></thead><tbody id="admin-demands-tbody"></tbody></table></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHATBOT IA -->
+<div class="chatbot-wrap" id="chatbot-wrap" style="display:none;">
+  <div class="chatbot-panel" id="chatbot-panel">
+    <div class="chatbot-header">
+      <span>🤖 Assistant BloodLink IA</span>
+      <span style="cursor:pointer;font-size:18px;" onclick="toggleChatbot()">×</span>
+    </div>
+    <div class="chatbot-messages" id="chatbot-messages"></div>
+    <div class="chatbot-input-row">
+      <input id="chatbot-input" placeholder="Posez votre question..." onkeydown="if(event.key==='Enter')sendChatMessage()">
+      <button onclick="sendChatMessage()">➤</button>
+    </div>
+  </div>
+  <button class="chatbot-btn" onclick="toggleChatbot()" title="Assistant IA">🤖</button>
+</div>
+
+</div><!-- end app -->
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  BLOODLINK — Script principal
+//  IMPORTANT : Ce fichier ne contient QUE les fonctions utilitaires.
+//  Les fonctions métier (doLogin, registerDonneur, etc.) sont dans patch.js
+//  qui est chargé APRÈS ce script et les remplace.
+// ═══════════════════════════════════════════════════════════════
+
+// ── DONNÉES LOCALES (quartiers uniquement) ──────────────────────
+const QUARTIERS = {
+  Kaloum: ['Almamya','Boulbinet','Coronthie','Fotoba','Kaloum Centre','Sandervalia','Tombo'],
+  Dixinn: ['Cameroun','Coleah','Dixinn Centre','Dixinn Mosquée','Donka','Landréah','Minière','Nongo'],
+  Matam: ['Belle-vue','Bonfi','Cosa Centre','Dar-Es-Salam','Enco-5','Madina Marché','Matam Centre','Enta'],
+  Ratoma: ['Bambéto','Cosa','Dar-Es-Salam','Hamdallaye','Kipé','Koloma','Sonfonia','Wanindara'],
+  Matoto: ['Cosa','Dabompa','Kagbèlen','Kobaya','Lambanyi','Matoto Centre','Tombolia']
+};
+
+let pendingCloseId = null;
+let lastMatchingData = [];
+
+// ── NAVIGATION ──────────────────────────────────────────────────
+function goPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) { el.classList.add('active'); window.scrollTo(0, 0); }
+  closeSidebar();
+}
+
+function toggleSidebar() {
+  document.querySelectorAll('.sidebar').forEach(s => s.classList.toggle('open'));
+}
+function closeSidebar() {
+  document.querySelectorAll('.sidebar').forEach(s => s.classList.remove('open'));
+}
+
+// ── SECTIONS DASHBOARD ──────────────────────────────────────────
+function showDonneurSection(sec, el) {
+  ['overview','demandes','mes-reponses','profil'].forEach(s => {
+    const e = document.getElementById('d-section-' + s);
+    if (e) e.style.display = 'none';
+  });
+  const t = document.getElementById('d-section-' + sec);
+  if (t) t.style.display = 'block';
+  if (el) {
+    document.querySelectorAll('#page-dashboard-donneur .sidebar-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+  }
+  // Appelle les fonctions RÉELLES de patch.js
+  if (sec === 'demandes')      renderDonneurDemands();
+  if (sec === 'overview')      renderDonneurRecent();
+  if (sec === 'mes-reponses')  loadMesReponses();
+  closeSidebar();
+}
+
+function showStructSection(sec, el) {
+  ['overview','create-demand','mes-demandes','matching','profil-struct'].forEach(s => {
+    const e = document.getElementById('s-section-' + s);
+    if (e) e.style.display = 'none';
+  });
+  const t = document.getElementById('s-section-' + sec);
+  if (t) t.style.display = 'block';
+  if (el) {
+    document.querySelectorAll('#page-dashboard-structure .sidebar-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+  }
+  // Appelle les fonctions RÉELLES de patch.js
+  if (sec === 'overview')       renderStructOverview();
+  if (sec === 'mes-demandes')   renderStructDemands();
+  closeSidebar();
+}
+
+function showAdminSection(sec, el) {
+  ['overview','structures','donneurs','demandes-admin'].forEach(s => {
+    const e = document.getElementById('a-section-' + s);
+    if (e) e.style.display = 'none';
+  });
+  const t = document.getElementById('a-section-' + sec);
+  if (t) t.style.display = 'block';
+  if (el) {
+    document.querySelectorAll('#page-dashboard-admin .sidebar-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+  }
+  // Appelle les fonctions RÉELLES de patch.js
+  if (sec === 'structures')      renderAdminStructures();
+  if (sec === 'demandes-admin')  renderAdminDemands();
+  if (sec === 'donneurs')        loadAdminDonneurs();
+  if (sec === 'overview')        { loadAdminStats(); renderBloodChart(); renderCommuneChart(); }
+  closeSidebar();
+}
+
+// ── BADGES (utilisés par renderDemandCard dans patch.js) ────────
+function urgenceBadge(u) {
+  if (u === 'haute')   return '<span class="badge badge-red">🔴 Haute</span>';
+  if (u === 'moyenne') return '<span class="badge badge-orange">🟡 Moyenne</span>';
+  return '<span class="badge badge-blue">🔵 Basse</span>';
+}
+function statutBadge(s) {
+  if (s === 'ouverte')                       return '<span class="badge badge-red">Ouverte</span>';
+  if (s === 'contactes' || s === 'contactés') return '<span class="badge badge-orange">Contactés</span>';
+  if (s === 'confirmes' || s === 'confirmés') return '<span class="badge badge-green">Confirmés</span>';
+  return '<span class="badge badge-gray">Clôturée</span>';
+}
+function bloodBadge(b) {
+  const isUniversal = b === 'O-' || b === 'O−';
+  const cls  = isUniversal ? 'badge-gold' : 'badge-red';
+  const star = isUniversal ? ' 🌟' : '';
+  return `<span class="badge ${cls}">${b}${star}</span>`;
+}
+
+// ── UTILITAIRES ─────────────────────────────────────────────────
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+function initials(name) {
+  if (!name) return '?';
+  return name.split(' ').filter(Boolean).map(n => n[0].toUpperCase()).slice(0, 2).join('');
+}
+
+function updateQuartiers(selectId, commune) {
+  const sel = document.getElementById(selectId);
+  if (!sel) return;
+  const q = QUARTIERS[commune] || [];
+  sel.innerHTML = q.length
+    ? q.map(n => `<option>${n}</option>`).join('')
+    : '<option value="">— Choisir —</option>';
+}
+
+function checkUniversal(sel) {
+  const hint = document.getElementById('universal-hint');
+  if (hint) hint.style.display = (sel.value === 'O−' || sel.value === 'O-') ? 'block' : 'none';
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+function updateProfileDispo(el) {
+  const tag = document.getElementById('profile-dispo-tag');
+  if (tag) tag.textContent = el.checked ? '✅ Disponible' : '⏸ Indisponible';
+}
+
+// Onglets de connexion (affichage seulement — pas de données fictives)
+function setLoginTab(type, el) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
+
+// Filtres
+function filterDemands(val, el) {
+  document.querySelectorAll('#d-section-demandes .filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderDonneurDemands(val);
+}
+function filterStructDemands(val, el) {
+  document.querySelectorAll('#s-section-mes-demandes .filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderStructDemands(val === 'toutes' ? null : val);
+}
+function filterMatching(val) {
+  if (typeof filterMatchingLocal === 'function') filterMatchingLocal(val);
+}
+
+// Charts admin (données fixes pour démo — remplacées par API si disponible)
+function renderBloodChart() {
+  const c = document.getElementById('blood-chart');
+  if (!c) return;
+  const data = [['O+',98],['A+',72],['B+',56],['AB+',34],['O−',22],['A−',14],['B−',10],['AB−',6]];
+  const max = data[0][1];
+  c.innerHTML = data.map(([g, n]) => `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="width:40px;text-align:right;">${bloodBadge(g)}</div>
+      <div class="progress-bar" style="flex:1;"><div class="progress-fill" style="width:${Math.round(n/max*100)}%;"></div></div>
+      <div style="width:36px;font-size:13px;font-weight:600;color:var(--text2);">${n}</div>
+    </div>`).join('');
+}
+function renderCommuneChart() {
+  const c = document.getElementById('commune-chart');
+  if (!c) return;
+  const data = [['Ratoma',98],['Matoto',72],['Dixinn',64],['Matam',52],['Kaloum',26]];
+  const max = data[0][1];
+  c.innerHTML = data.map(([g, n]) => `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="width:60px;font-size:13px;font-weight:500;color:var(--text2);">${g}</div>
+      <div class="progress-bar" style="flex:1;"><div class="progress-fill" style="width:${Math.round(n/max*100)}%;background:var(--blue);"></div></div>
+      <div style="width:36px;font-size:13px;font-weight:600;color:var(--text2);">${n}</div>
+    </div>`).join('');
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+
+// Date par défaut pour le formulaire de demande
+window.addEventListener('load', () => {
+  const today = new Date();
+  today.setDate(today.getDate() + 3);
+  const inp = document.getElementById('req-date');
+  if (inp) inp.value = today.toISOString().split('T')[0];
+});
+</script>
+<script src="api.js"></script>
+<script src="patch.js"></script>
+
+</body>
+</html>

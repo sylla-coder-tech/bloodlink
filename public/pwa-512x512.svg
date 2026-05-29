@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="96" fill="#E63946"/>
+  <path d="M256 80 C256 80, 144 192, 144 272 C144 336.3 193.7 384 256 384 C318.3 384 368 336.3 368 272 C368 192 256 80 256 80Z" fill="white"/>
+  <path d="M256 160 C256 160, 192 240, 192 288 C192 323.3 220.7 352 256 352 C291.3 352 320 323.3 320 288 C320 240 256 160 256 160Z" fill="#E63946" opacity="0.55"/>
+  <text x="256" y="460" font-size="44" text-anchor="middle" fill="white" font-family="Arial,sans-serif" font-weight="700" letter-spacing="2">BLOODLINK</text>
+</svg>

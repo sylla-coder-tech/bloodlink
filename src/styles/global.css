@@ -1,0 +1,138 @@
+@import './animations.css';
+
+:root {
+  /* Colors - Modern Palette */
+  --red: #E63946;
+  --red-light: #FF6B6B;
+  --red-pale: #FFF5F5;
+  --red-dark: #C1121F;
+
+  --bg: #FAFAFA;
+  --bg1: #FFFFFF;
+  --bg2: #F8F9FA;
+  --bg3: #F1F3F5;
+
+  --white: #FFFFFF;
+  --text: #1A1A2E;
+  --text2: #4A4A6A;
+  --text3: #8A8AAA;
+  --border: #E8E8F0;
+
+  --green: #10B981;
+  --green-pale: #ECFDF5;
+
+  --orange: #F59E0B;
+  --orange-pale: #FFFBEB;
+
+  --blue: #3B82F6;
+  --blue-pale: #EFF6FF;
+
+  --purple: #8B5CF6;
+  --purple-pale: #F5F3FF;
+
+  /* Spacing */
+  --xs: 4px;
+  --sm: 8px;
+  --md: 12px;
+  --lg: 16px;
+  --xl: 24px;
+  --xxl: 32px;
+  --xxxl: 48px;
+
+  /* Radius */
+  --radius: 16px;
+  --radius-sm: 8px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+
+  /* Shadows - More subtle and modern */
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* Typography */
+  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Transitions */
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-primary);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Global scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text3);
+}
+
+/* Selection */
+::selection {
+  background: var(--red);
+  color: var(--white);
+}
+
+/* ── Responsive utilities ─────────────────────────────────────── */
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Touch-friendly tap targets */
+@media (max-width: 768px) {
+  button, a, [role="button"] {
+    min-height: 40px;
+  }
+}
+
+/* Hide/show helpers */
+@media (max-width: 768px) {
+  .hide-mobile { display: none !important; }
+}
+@media (min-width: 769px) {
+  .hide-desktop { display: none !important; }
+}
+
+/* Scrollbar thin on mobile */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+}
