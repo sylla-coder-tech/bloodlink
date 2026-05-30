@@ -1,12 +1,18 @@
 import { Link, useLocation } from 'react-router-dom'
+import { useAuth } from '../../hooks/useAuth'
 import styles from './Sidebar.module.css'
 
 export default function Sidebar({ isOpen, onClose, items }) {
   const location = useLocation()
+  const { logout } = useAuth()
+
+  const handleLogout = () => {
+    logout()
+    window.location.href = '/login'
+  }
 
   return (
     <>
-      {/* Overlay for mobile */}
       {isOpen && (
         <div className={styles.overlay} onClick={onClose}></div>
       )}
@@ -38,6 +44,13 @@ export default function Sidebar({ isOpen, onClose, items }) {
             })}
           </div>
         ))}
+
+        {/* Bouton déconnexion visible uniquement sur mobile */}
+        <div className={styles['logout-mobile']}>
+          <button className={styles['btn-logout']} onClick={handleLogout}>
+            🚪 Déconnexion
+          </button>
+        </div>
       </aside>
     </>
   )

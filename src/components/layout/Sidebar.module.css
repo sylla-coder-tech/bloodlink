@@ -106,3 +106,29 @@
     font-size: 13px;
   }
 }
+
+.logout-mobile {
+  display: none;
+  padding: 16px;
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+}
+
+.btn-logout {
+  width: 100%;
+  background: var(--red-pale);
+  color: var(--red);
+  border: 1.5px solid var(--red);
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .logout-mobile {
+    display: block;
+  }
+}

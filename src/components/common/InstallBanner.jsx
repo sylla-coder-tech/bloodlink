@@ -15,13 +15,14 @@ export default function InstallBanner() {
       window.navigator.standalone === true
     if (isInstalled) return
 
-    // Ne pas afficher si fermé dans cette session
-    if (sessionStorage.getItem(DISMISSED_KEY)) return
+    // Ne pas afficher si déjà fermé
+    if (localStorage.getItem(DISMISSED_KEY)) return
 
     const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream
+    const isMobile = /android|iphone|ipad|ipod|mobile/i.test(navigator.userAgent)
     setIsIOS(ios)
 
-    // Capturer le prompt natif si disponible (Chrome/Edge/Android)
+    // Capturer le prompt natif Android/Chrome
     const handler = (e) => {
       e.preventDefault()
       promptRef.current = e
@@ -29,27 +30,39 @@ export default function InstallBanner() {
     window.addEventListener('beforeinstallprompt', handler)
     window.addEventListener('appinstalled', () => setVisible(false))
 
-    // Afficher la bannière immédiatement (pas besoin d'attendre l'événement)
-    setVisible(true)
+    // Afficher sur mobile directement, sur desktop attendre le prompt
+    if (isMobile || ios) {
+      setVisible(true)
+    } else {
+      // Desktop : afficher seulement si le prompt natif arrive
+      const desktopHandler = (e) => {
+        e.preventDefault()
+        promptRef.current = e
+        setVisible(true)
+      }
+      window.addEventListener('beforeinstallprompt', desktopHandler)
+      return () => {
+        window.removeEventListener('beforeinstallprompt', handler)
+        window.removeEventListener('beforeinstallprompt', desktopHandler)
+      }
+    }
 
     return () => window.removeEventListener('beforeinstallprompt', handler)
   }, [])
 
   const handleInstall = async () => {
     if (promptRef.current) {
-      // Prompt natif disponible → déclencher l'installation directe
       promptRef.current.prompt()
       const { outcome } = await promptRef.current.userChoice
       promptRef.current = null
       if (outcome === 'accepted') setVisible(false)
     } else {
-      // Pas de prompt natif → ouvrir le menu du navigateur (instruction)
       setVisible(false)
     }
   }
 
   const handleDismiss = () => {
-    sessionStorage.setItem(DISMISSED_KEY, '1')
+    localStorage.setItem(DISMISSED_KEY, '1')
     setVisible(false)
   }
 
