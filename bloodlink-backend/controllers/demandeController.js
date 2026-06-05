@@ -88,7 +88,7 @@ async function createDemande(req, res) {
     });
   } catch (err) {
     console.error('createDemande:', err.message);
-    return res.status(500).json({ success: false, message: 'Erreur serveur', detail: err.message });
+    return res.status(500).json({ success: false, message: 'Erreur serveur' });
   }
 }
 
@@ -146,7 +146,7 @@ async function cloturerDemande(req, res) {
     return res.json({ success: true, message: 'Demande clôturée', demande: data });
   } catch (err) {
     console.error('cloturerDemande exception:', err.message);
-    return res.status(500).json({ success: false, message: err.message });
+    return res.status(500).json({ success: false, message: 'Erreur serveur' });
   }
 }
 

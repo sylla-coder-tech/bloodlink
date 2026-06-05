@@ -29,11 +29,7 @@ export const AuthService = {
     return apiClient.post('/auth/register', payload)
   },
   
-  logout: () => {
-    localStorage.removeItem('bl_token')
-    localStorage.removeItem('bl_user')
-    localStorage.removeItem('bl_role')
-  }
+  logout: () => apiClient.post('/auth/logout')
 }
 
 export const DemandService = {

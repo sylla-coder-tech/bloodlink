@@ -4,6 +4,11 @@ const cors        = require('cors');
 const helmet      = require('helmet');
 const morgan      = require('morgan');
 const rateLimit   = require('express-rate-limit');
+const cookieParser = require('cookie-parser');
+
+// Blacklist JWT en mémoire (remplacer par Redis en prod haute disponibilité)
+const jwtBlacklist = new Set();
+module.exports.jwtBlacklist = jwtBlacklist;
 
 const authRoutes      = require('./routes/auth.routes');
 const donneurRoutes   = require('./routes/donneur.routes');
@@ -17,7 +22,21 @@ const app  = express();
 const PORT = process.env.PORT || 3001;
 
 // ── MIDDLEWARE GLOBAL ─────────────────────────────────────────
-app.use(helmet({ contentSecurityPolicy: false }));
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc:  ["'self'"],
+      styleSrc:   ["'self'", "'unsafe-inline'"],
+      imgSrc:     ["'self'", 'data:'],
+      connectSrc: ["'self'"],
+      fontSrc:    ["'self'"],
+      objectSrc:  ["'none'"],
+      frameAncestors: ["'none'"]
+    }
+  },
+  crossOriginEmbedderPolicy: false
+}));
 
 // CORS — autorise Live Server (5500) et autres origines locales
 const allowedOrigins = [
@@ -30,13 +49,14 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Autoriser sans origin (Thunder Client, Postman) + origines connues
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      // En developpement on autorise tout
-      callback(null, true);
+    // Autoriser sans origin (Thunder Client, Postman en dev uniquement)
+    if (!origin && process.env.NODE_ENV !== 'production') {
+      return callback(null, true);
     }
+    if (origin && allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    callback(new Error(`Origine non autorisée : ${origin}`));
   },
   credentials: true,
   methods: ['GET','POST','PUT','DELETE','OPTIONS'],
@@ -44,12 +64,13 @@ app.use(cors({
 }));
 
 app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
 app.use(morgan('dev'));
 
 // ── RATE LIMITING ─────────────────────────────────────────────
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,  // 15 minutes
-  max: 500,
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: { success: false, message: 'Trop de requêtes. Réessayez dans 15 minutes.' }
 });
 const authLimiter = rateLimit({

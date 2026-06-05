@@ -175,7 +175,7 @@ async function getReports(req, res) {
     return res.json({ success: true, reports: data || [] });
   } catch (err) {
     console.error('getReports:', err.message);
-    return res.status(500).json({ success: false, message: 'Erreur serveur', detail: err.message });
+    return res.status(500).json({ success: false, message: 'Erreur serveur' });
   }
 }
 
@@ -241,7 +241,7 @@ async function updateDemandeStatut(req, res) {
     return res.json({ success: true, demande: data });
   } catch (err) {
     console.error('updateDemandeStatut:', err.message);
-    return res.status(500).json({ success: false, message: err.message || 'Erreur serveur' });
+    return res.status(500).json({ success: false, message: 'Erreur serveur' });
   }
 }
 

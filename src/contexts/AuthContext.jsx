@@ -1,56 +1,45 @@
 import { createContext, useState, useEffect } from 'react'
+import apiClient from '../services/apiClient'
 
 export const AuthContext = createContext()
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
-  const [token, setToken] = useState(null)
+  const [user, setUser]       = useState(null)
+  const [role, setRole]       = useState(null)
   const [loading, setLoading] = useState(true)
-  const [role, setRole] = useState(null)
 
-  // Initialiser depuis localStorage
+  // Restaurer la session au démarrage via le cookie HttpOnly
   useEffect(() => {
-    const storedToken = localStorage.getItem('bl_token')
-    const storedRole = localStorage.getItem('bl_role')
-    const storedUser = localStorage.getItem('bl_user')
-
-    if (storedToken && storedUser) {
-      setToken(storedToken)
-      setRole(storedRole)
-      setUser(JSON.parse(storedUser))
-    }
-    setLoading(false)
+    apiClient.get('/auth/me')
+      .then(({ data }) => {
+        if (data.success) {
+          setUser(data.user)
+          setRole(data.role)
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
   }, [])
 
-  const login = (userData, authToken, userRole) => {
-    localStorage.setItem('bl_token', authToken)
-    localStorage.setItem('bl_role', userRole)
-    localStorage.setItem('bl_user', JSON.stringify(userData))
-    
-    setToken(authToken)
-    setRole(userRole)
+  const login = (userData, _token, userRole) => {
+    // Le token JWT est dans un cookie HttpOnly — plus de localStorage
     setUser(userData)
+    setRole(userRole)
   }
 
-  const logout = () => {
-    localStorage.removeItem('bl_token')
-    localStorage.removeItem('bl_role')
-    localStorage.removeItem('bl_user')
-    
-    setToken(null)
-    setRole(null)
+  const logout = async () => {
+    try { await apiClient.post('/auth/logout') } catch (_) {}
     setUser(null)
+    setRole(null)
   }
 
-  const isLoggedIn = !!token
-  
   return (
     <AuthContext.Provider value={{
       user,
-      token,
+      token: null,  // plus exposé en JS
       role,
       loading,
-      isLoggedIn,
+      isLoggedIn: !!user,
       login,
       logout
     }}>

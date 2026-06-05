@@ -48,7 +48,7 @@ async function registerDonneur(req, res) {
     return res.status(201).json({ success: true, message: 'Compte donneur créé', token, donneur });
   } catch (err) {
     console.error('registerDonneur:', err.message);
-    return res.status(500).json({ success: false, message: 'Erreur serveur', detail: err.message });
+    return res.status(500).json({ success: false, message: 'Erreur serveur' });
   }
 }
 
@@ -90,7 +90,7 @@ async function registerStructure(req, res) {
     });
   } catch (err) {
     console.error('registerStructure:', err.message);
-    return res.status(500).json({ success: false, message: 'Erreur serveur', detail: err.message });
+    return res.status(500).json({ success: false, message: 'Erreur serveur' });
   }
 }
 
@@ -102,16 +102,13 @@ async function login(req, res) {
       return res.status(400).json({ success: false, message: 'Email et mot de passe requis' });
     }
 
-    // Auth via Supabase — client anon uniquement pour signInWithPassword (pas admin)
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({ email, password });
     if (authError || !authData?.user) {
-      console.error('Login authError:', authError?.message);
       return res.status(401).json({ success: false, message: 'Email ou mot de passe incorrect' });
     }
 
     const userId = authData.user.id;
 
-    // Vérifier admin, donneur et structure en parallèle
     const [
       { data: admin },
       { data: donneur },
@@ -122,20 +119,29 @@ async function login(req, res) {
       supabaseAdmin.from('structures').select('*').eq('auth_user_id', userId).maybeSingle()
     ]);
 
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 jours en ms
+    };
+
     if (admin) {
       const token = signToken({ id: admin.id, role: 'admin', email: admin.email });
+      res.cookie('bl_token', token, cookieOptions);
       return res.json({ success: true, role: 'admin', token, user: admin });
     }
 
     if (donneur) {
-      const statut = donneur.statut_validation
+      const statut = donneur.statut_validation;
       if (statut === 'rejeté' || statut === 'rejete') {
-        return res.status(403).json({ success: false, code: 'COMPTE_REJETE', message: 'Votre inscription a été rejetée par le CNTS. Contactez-nous pour plus d\'informations.' })
+        return res.status(403).json({ success: false, code: 'COMPTE_REJETE', message: 'Votre inscription a été rejetée par le CNTS. Contactez-nous pour plus d\'informations.' });
       }
       if (statut === 'suspendu') {
-        return res.status(403).json({ success: false, code: 'COMPTE_SUSPENDU', message: 'Votre compte a été suspendu par le CNTS. Contactez-nous pour régulariser votre situation.' })
+        return res.status(403).json({ success: false, code: 'COMPTE_SUSPENDU', message: 'Votre compte a été suspendu par le CNTS. Contactez-nous pour régulariser votre situation.' });
       }
       const token = signToken({ id: donneur.id, role: 'donneur', auth_user_id: userId });
+      res.cookie('bl_token', token, cookieOptions);
       return res.json({ success: true, role: 'donneur', token, user: donneur });
     }
 
@@ -144,12 +150,33 @@ async function login(req, res) {
         return res.status(403).json({ success: false, message: 'Votre compte structure a été refusé. Contactez BloodLink.' });
       }
       const token = signToken({ id: structure.id, role: 'structure', statut: structure.statut_validation, auth_user_id: userId });
+      res.cookie('bl_token', token, cookieOptions);
       return res.json({ success: true, role: 'structure', token, user: structure });
     }
 
     return res.status(404).json({ success: false, message: 'Compte introuvable' });
   } catch (err) {
     console.error('login:', err.message);
+    return res.status(500).json({ success: false, message: 'Erreur serveur' });
+  }
+}
+
+// ── DÉCONNEXION — révoque le JWT via blacklist
+async function logout(req, res) {
+  try {
+    const authHeader = req.headers.authorization;
+    const cookieToken = req.cookies?.bl_token;
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : cookieToken;
+
+    if (token) {
+      const { jwtBlacklist } = require('../server');
+      jwtBlacklist.add(token);
+    }
+
+    res.clearCookie('bl_token', { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
+    return res.json({ success: true, message: 'Déconnecté' });
+  } catch (err) {
+    console.error('logout:', err.message);
     return res.status(500).json({ success: false, message: 'Erreur serveur' });
   }
 }
@@ -200,8 +227,8 @@ async function register(req, res) {
     }
   } catch (err) {
     console.error('register:', err.message);
-    return res.status(500).json({ success: false, message: 'Erreur serveur', detail: err.message });
+    return res.status(500).json({ success: false, message: 'Erreur serveur' });
   }
 }
 
-module.exports = { register, registerDonneur, registerStructure, login, getMe };
+module.exports = { register, registerDonneur, registerStructure, login, logout, getMe };

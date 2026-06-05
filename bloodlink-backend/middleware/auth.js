@@ -2,10 +2,27 @@ const jwt = require('jsonwebtoken');
 
 function authMiddleware(req, res, next) {
   const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  const cookieToken = req.cookies?.bl_token;
+
+  let token = null;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    token = authHeader.split(' ')[1];
+  } else if (cookieToken) {
+    token = cookieToken;
+  }
+
+  if (!token) {
     return res.status(401).json({ success: false, message: 'Token manquant' });
   }
-  const token = authHeader.split(' ')[1];
+
+  // Vérifier si le token est révoqué
+  try {
+    const { jwtBlacklist } = require('../server');
+    if (jwtBlacklist.has(token)) {
+      return res.status(401).json({ success: false, message: 'Token révoqué' });
+    }
+  } catch (_) { /* server pas encore chargé au premier démarrage */ }
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;

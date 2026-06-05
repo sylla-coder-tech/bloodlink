@@ -32,11 +32,10 @@ export function useMessages(interlocuteurId) {
   useEffect(() => {
     if (!interlocuteurId || interlocuteurId === 'new' || interlocuteurId === 'cnts') return
 
-    const token = localStorage.getItem('bl_token')
-
-    // Tentative SSE
+    // Tentative SSE avec cookie (withCredentials via EventSource non supporté nativement)
+    // On passe par un header custom → fallback polling direct plus sécurisé
     try {
-      const es = new EventSource(`${API_URL}/messages/stream?token=${token}`)
+      const es = new EventSource(`${API_URL}/messages/stream`, { withCredentials: true })
       sseRef.current = es
       sseOkRef.current = false
 
