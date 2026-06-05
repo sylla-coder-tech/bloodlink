@@ -10,6 +10,7 @@ import Button from '../components/common/Button'
 import Alert from '../components/common/Alert'
 import AIAssistant from '../components/common/AIAssistant'
 import styles from './Dashboard.module.css'
+import adminStyles from './Admin.module.css'
 
 const ADMIN_MENU = [
   {
@@ -150,11 +151,7 @@ function AdminDonneurs() {
 
       <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
         {filters.map(s => (
-          <button key={s} onClick={() => setFilter(s)} style={{
-            padding: '6px 14px', borderRadius: '20px', border: '1px solid var(--border)', cursor: 'pointer',
-            background: filter === s ? 'var(--red)' : 'white',
-            color: filter === s ? 'white' : 'var(--text1)', fontSize: '13px'
-          }}>
+          <button key={s} onClick={() => setFilter(s)} className={`${adminStyles['filter-btn']} ${filter === s ? adminStyles['active'] : ''}`}>
             {statutLabel[s]}
           </button>
         ))}
@@ -250,13 +247,9 @@ function AdminStructures() {
       {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} autoClose />}
       <h1 style={{ marginBottom: '16px' }}>Validation des structures 🏥</h1>
 
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
         {['en_attente', 'valide', 'refuse'].map(s => (
-          <button key={s} onClick={() => setFilter(s)} style={{
-            padding: '6px 16px', borderRadius: '20px', border: '1px solid var(--border)', cursor: 'pointer',
-            background: filter === s ? 'var(--red)' : 'white',
-            color: filter === s ? 'white' : 'var(--text1)', fontSize: '13px'
-          }}>
+          <button key={s} onClick={() => setFilter(s)} className={`${adminStyles['filter-btn']} ${filter === s ? adminStyles['active'] : ''}`}>
             {statutLabel[s]}
           </button>
         ))}
@@ -587,11 +580,7 @@ function AdminAudit() {
       <h1 style={{ marginBottom: '16px' }}>Journal d'audit 📜</h1>
       <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
         {[['', 'Tout'], ['donneur', '🩸 Donneurs'], ['structure', '🏥 Structures']].map(([val, label]) => (
-          <button key={val} onClick={() => setFilter(val)} style={{
-            padding: '6px 14px', borderRadius: '20px', border: '1px solid var(--border)', cursor: 'pointer',
-            background: filter === val ? 'var(--red)' : 'white',
-            color: filter === val ? 'white' : 'var(--text1)', fontSize: '13px'
-          }}>{label}</button>
+          <button key={val} onClick={() => setFilter(val)} className={`${adminStyles['filter-btn']} ${filter === val ? adminStyles['active'] : ''}`}>{label}</button>
         ))}
       </div>
 
@@ -1115,24 +1104,20 @@ function AdminMessagerie() {
 
   return (
     <div>
-      <h1 style={{ marginBottom: '8px' }}>Messagerie CNTS 💬</h1>
-      <p style={{ color: 'var(--text2)', fontSize: '14px', marginBottom: '20px' }}>
+      <h1 className={adminStyles['page-title']}>Messagerie CNTS 💬</h1>
+      <p className={adminStyles['page-subtitle']}>
         Communiquez avec les donneurs et les structures de santé.
       </p>
 
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
         {[['all', '📬 Tous'], ['donneur', '🩸 Donneurs'], ['structure', '🏥 Structures']].map(([val, label]) => (
-          <button key={val} onClick={() => setTab(val)} style={{
-            padding: '6px 14px', borderRadius: '20px', border: '1px solid var(--border)', cursor: 'pointer',
-            background: tab === val ? 'var(--red)' : 'white',
-            color: tab === val ? 'white' : 'var(--text1)', fontSize: '13px'
-          }}>{label}</button>
+          <button key={val} onClick={() => setTab(val)} className={`${adminStyles['filter-btn']} ${tab === val ? adminStyles['active'] : ''}`}>{label}</button>
         ))}
       </div>
 
-      <div style={{ display: 'flex', gap: '16px', height: '600px' }}>
+      <div className={`${adminStyles['msg-container']} ${selectedConv ? adminStyles['chat-open'] : ''}`}>
         {/* Liste conversations */}
-        <div style={{ width: '300px', flexShrink: 0, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+        <div className={adminStyles['msg-sidebar']}>
           {matchGroupe && (
             <div style={{ background: '#FEF9E7', border: '1px solid #F9CA24', borderRadius: '8px', padding: '8px 12px', fontSize: '12px', color: '#7D6608' }}>
               🩸 Donneurs compatibles <strong>{matchGroupe}</strong> mis en avant
@@ -1161,7 +1146,6 @@ function AdminMessagerie() {
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
-                      {/* Avatar avec initiales */}
                       <div style={{
                         width: '40px', height: '40px', borderRadius: '50%', flexShrink: 0,
                         background: conv.interlocuteur_type === 'donneur' ? 'var(--red)' : 'var(--blue)',
@@ -1200,11 +1184,6 @@ function AdminMessagerie() {
                       {conv.dernier_message}
                     </p>
                   )}
-                  {conv.derniere_date && (
-                    <p style={{ margin: '2px 0 0', fontSize: '10px', color: 'var(--text3)' }}>
-                      {new Date(conv.derniere_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
-                    </p>
-                  )}
                 </Card>
               )
             })
@@ -1212,10 +1191,10 @@ function AdminMessagerie() {
         </div>
 
         {/* Zone de chat */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', border: '1px solid var(--border)', borderRadius: '12px', overflow: 'hidden' }}>
+        <div className={adminStyles['msg-chat']}>
           {selectedConv ? (
             <>
-              {/* En-tête conversation */}
+              <button className={adminStyles['msg-back']} onClick={() => setSelectedConv(null)}>← Retour</button>
               <div style={{ padding: '14px 16px', borderBottom: '1px solid var(--border)', background: 'var(--bg2)', display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <div style={{
                   width: '44px', height: '44px', borderRadius: '50%',
@@ -1235,7 +1214,6 @@ function AdminMessagerie() {
                 </div>
               </div>
 
-              {/* Messages */}
               <div style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {messages.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text3)' }}>
@@ -1249,7 +1227,6 @@ function AdminMessagerie() {
                     return (
                       <div key={msg.id} style={{ display: 'flex', justifyContent: isMine ? 'flex-end' : 'flex-start' }}>
                         <div style={{ maxWidth: '70%' }}>
-                          {/* Nom de l'expéditeur */}
                           <p style={{ margin: '0 0 3px', fontSize: '11px', color: 'var(--text3)', textAlign: isMine ? 'right' : 'left', fontWeight: 600 }}>
                             {senderName}
                           </p>
