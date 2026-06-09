@@ -4,42 +4,44 @@ import apiClient from '../services/apiClient'
 export const AuthContext = createContext()
 
 const CACHE_KEY = 'bl_session'
+const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 
 function readCache() {
-  try { return JSON.parse(localStorage.getItem(CACHE_KEY)) } catch { return null }
+  try {
+    const c = JSON.parse(localStorage.getItem(CACHE_KEY))
+    if (c && Date.now() - c.ts < CACHE_TTL) return c
+    return null
+  } catch { return null }
 }
 
 export function AuthProvider({ children }) {
   const cached = readCache()
   const [user, setUser]       = useState(cached?.user || null)
   const [role, setRole]       = useState(cached?.role || null)
-  const [loading, setLoading] = useState(!cached) // pas de loading si cache présent
+  const [loading, setLoading] = useState(!cached)
 
-  // Vérifier la session en arrière-plan (silencieux si cache présent)
   useEffect(() => {
+    // Si cache valide (<5 min), pas besoin de revalider côté serveur
+    if (cached) { setLoading(false); return }
+
     apiClient.get('/auth/me')
       .then(({ data }) => {
         if (data.success) {
           setUser(data.user)
           setRole(data.role)
-          localStorage.setItem(CACHE_KEY, JSON.stringify({ user: data.user, role: data.role }))
+          localStorage.setItem(CACHE_KEY, JSON.stringify({ user: data.user, role: data.role, ts: Date.now() }))
         } else {
-          setUser(null)
-          setRole(null)
           localStorage.removeItem(CACHE_KEY)
         }
       })
-      .catch(() => {
-        // Si pas de cache, on n'est pas connecté
-        if (!cached) { setUser(null); setRole(null) }
-      })
+      .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
 
   const login = (userData, _token, userRole) => {
     setUser(userData)
     setRole(userRole)
-    localStorage.setItem(CACHE_KEY, JSON.stringify({ user: userData, role: userRole }))
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ user: userData, role: userRole, ts: Date.now() }))
   }
 
   const logout = async () => {
