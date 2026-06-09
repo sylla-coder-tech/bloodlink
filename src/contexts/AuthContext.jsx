@@ -3,34 +3,50 @@ import apiClient from '../services/apiClient'
 
 export const AuthContext = createContext()
 
-export function AuthProvider({ children }) {
-  const [user, setUser]       = useState(null)
-  const [role, setRole]       = useState(null)
-  const [loading, setLoading] = useState(true)
+const CACHE_KEY = 'bl_session'
 
-  // Restaurer la session au démarrage via le cookie HttpOnly
+function readCache() {
+  try { return JSON.parse(localStorage.getItem(CACHE_KEY)) } catch { return null }
+}
+
+export function AuthProvider({ children }) {
+  const cached = readCache()
+  const [user, setUser]       = useState(cached?.user || null)
+  const [role, setRole]       = useState(cached?.role || null)
+  const [loading, setLoading] = useState(!cached) // pas de loading si cache présent
+
+  // Vérifier la session en arrière-plan (silencieux si cache présent)
   useEffect(() => {
     apiClient.get('/auth/me')
       .then(({ data }) => {
         if (data.success) {
           setUser(data.user)
           setRole(data.role)
+          localStorage.setItem(CACHE_KEY, JSON.stringify({ user: data.user, role: data.role }))
+        } else {
+          setUser(null)
+          setRole(null)
+          localStorage.removeItem(CACHE_KEY)
         }
       })
-      .catch(() => {})
+      .catch(() => {
+        // Si pas de cache, on n'est pas connecté
+        if (!cached) { setUser(null); setRole(null) }
+      })
       .finally(() => setLoading(false))
   }, [])
 
   const login = (userData, _token, userRole) => {
-    // Le token JWT est dans un cookie HttpOnly — plus de localStorage
     setUser(userData)
     setRole(userRole)
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ user: userData, role: userRole }))
   }
 
   const logout = async () => {
     try { await apiClient.post('/auth/logout') } catch (_) {}
     setUser(null)
     setRole(null)
+    localStorage.removeItem(CACHE_KEY)
   }
 
   return (
