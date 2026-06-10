@@ -151,7 +151,7 @@ export default function StructureHome() {
               <Card key={d.id} style={{ padding: '16px', borderLeft: '4px solid var(--red)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <h4 style={{ margin: '0 0 4px 0' }}>{d.groupe_sanguin} — {d.quantite}L</h4>
+                    <h4 style={{ margin: '0 0 4px 0' }}>{d.groupe_sanguin} — {d.quantite} poche(s)</h4>
                     <p style={{ margin: 0, color: 'var(--text2)', fontSize: '12px' }}>{d.urgence}</p>
                   </div>
                   <span style={{
