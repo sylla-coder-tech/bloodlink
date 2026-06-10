@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '../../hooks/useAuth'
 import { StructureService } from '../../services'
+import { Settings, Building2 } from 'lucide-react'
 import Button from '../../components/common/Button'
 import Input from '../../components/common/Input'
 import Card from '../../components/common/Card'
@@ -42,11 +43,11 @@ export default function StructureSettings() {
       // Mettre à jour le contexte avec les nouvelles données
       const updatedUser = data.structure || data.user || { ...user, ...formData }
       login(updatedUser, token, role)
-      setAlert({ type: 'success', message: '✅ Paramètres mis à jour avec succès!' })
+      setAlert({ type: 'success', message: 'Paramètres mis à jour avec succès!' })
       setIsEditing(false)
     } catch (err) {
       console.error('Erreur:', err)
-      setAlert({ type: 'error', message: err.response?.data?.message || '❌ Erreur lors de la mise à jour' })
+      setAlert({ type: 'error', message: err.response?.data?.message || 'Erreur lors de la mise à jour' })
     } finally {
       setLoading(false)
     }
@@ -69,14 +70,14 @@ export default function StructureSettings() {
       )}
 
       <div className={styles['page-header']}>
-        <h1>Paramètres 🏥</h1>
+        <h1 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}><Settings size={28} /> Paramètres</h1>
         <p>Gère les informations de ta structure</p>
       </div>
 
       <div className={styles['settings-grid']}>
         <Card className={styles['structure-card']}>
           <div className={styles['structure-header']}>
-            <div className={styles.icon}>🏥</div>
+            <div className={styles.icon}><Building2 size={32} color="var(--red)" /></div>
             <div>
               <h3>{user?.nom || user?.name || 'Ma Structure'}</h3>
               <p>{formData.type}</p>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '../../hooks/useAuth'
 import { DonneurService } from '../../services'
+import { CheckCircle, PauseCircle, User } from 'lucide-react'
 import Button from '../../components/common/Button'
 import Input from '../../components/common/Input'
 import Card from '../../components/common/Card'
@@ -44,11 +45,11 @@ export default function DonneurProfile() {
       // Mettre à jour le contexte sans recharger la page
       const updatedUser = data.donneur || data.user || { ...user, ...payload }
       login(updatedUser, token, role)
-      setAlert({ type: 'success', message: '✅ Profil mis à jour avec succès!' })
+      setAlert({ type: 'success', message: 'Profil mis à jour avec succès!' })
       setIsEditing(false)
     } catch (err) {
       console.error('Erreur:', err)
-      setAlert({ type: 'error', message: err.response?.data?.message || '❌ Erreur lors de la mise à jour' })
+      setAlert({ type: 'error', message: err.response?.data?.message || 'Erreur lors de la mise à jour' })
     } finally {
       setLoading(false)
     }
@@ -61,7 +62,7 @@ export default function DonneurProfile() {
       )}
 
       <div className={styles['page-header']}>
-        <h1>Mon profil 👤</h1>
+        <h1 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}><User size={28} /> Mon profil</h1>
         <p>Gère tes informations personnelles</p>
       </div>
 
@@ -81,7 +82,9 @@ export default function DonneurProfile() {
               <span className={styles.label}>Groupe</span>
             </div>
             <div>
-              <span className={styles.value}>{formData.disponibilite ? '✅' : '⏸️'}</span>
+              <span className={styles.value} style={{ display: 'flex', justifyContent: 'center' }}>
+                {formData.disponibilite ? <CheckCircle size={22} color="var(--green)" /> : <PauseCircle size={22} color="#999" />}
+              </span>
               <span className={styles.label}>Statut</span>
             </div>
           </div>
@@ -152,7 +155,11 @@ export default function DonneurProfile() {
             </div>
             <div className={styles['info-row']}>
               <span className={styles.label}>Statut:</span>
-              <span className={styles.status}>{formData.disponibilite ? '✅ Disponible' : '⏸️ Indisponible'}</span>
+              <span className={styles.status} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                {formData.disponibilite
+                  ? <><CheckCircle size={14} color="var(--green)" /> Disponible</>
+                  : <><PauseCircle size={14} color="#999" /> Indisponible</>}
+              </span>
             </div>
           </Card>
         )}

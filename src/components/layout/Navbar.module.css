@@ -124,6 +124,11 @@
   .user-name {
     display: none;
   }
+
+  /* Déconnexion dans la sidebar sur mobile, on cache ici */
+  .btn-logout {
+    display: none;
+  }
 }
 
 @media (max-width: 480px) {
@@ -138,7 +143,7 @@
     font-size: 11px;
   }
 
-  .btn-logout {
-    display: none;
+  .right {
+    gap: 8px;
   }
 }

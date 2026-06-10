@@ -153,17 +153,16 @@
     gap: 0;
   }
 
-  /* On mobile: show only one panel at a time */
   .conversations-list {
     display: flex;
   }
 
   .chat-area {
     display: none;
-    height: calc(100vh - 180px);
+    height: calc(100dvh - 130px);
+    min-height: 0;
   }
 
-  /* When a conversation is selected, hide list and show chat */
   .messages-container.chat-open .conversations-list {
     display: none;
   }
@@ -188,7 +187,7 @@
 
   .chat-area {
     padding: 12px;
-    height: calc(100vh - 160px);
+    height: calc(100dvh - 130px);
   }
 
   .message {

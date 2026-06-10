@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { DonneurService } from '../../services'
 import apiClient from '../../services/apiClient'
+import { Droplets, CheckCircle, ClipboardList, Heart, Inbox, RefreshCw, AlertTriangle, FileText } from 'lucide-react'
 import Card from '../../components/common/Card'
 import Button from '../../components/common/Button'
 import styles from './Home.module.css'
@@ -51,36 +52,37 @@ export default function DonneurHome() {
   }
 
   const statutColor = { en_attente: 'var(--orange)', confirmée: 'var(--green)', refusée: 'var(--red)' }
-  const typeLabel = { renouvellement: '🔄 Renouvellement', urgence: '🚨 Urgence', autre: '📋 Autre' }
+  const typeLabel = { renouvellement: 'Renouvellement', urgence: 'Urgence', autre: 'Autre' }
+  const typeIcon = { renouvellement: <RefreshCw size={14} />, urgence: <AlertTriangle size={14} />, autre: <FileText size={14} /> }
 
   return (
     <div>
       <div className={styles['page-header']}>
-        <h1>Bienvenue, {user?.prenom || user?.firstName} 👋</h1>
+        <h1>Bienvenue, {user?.prenom || user?.firstName}</h1>
         <p>Votre espace donneur — coordonné par le CNTS</p>
       </div>
 
       <div className={styles['stat-grid']}>
         <Card className={styles['stat-card']}>
-          <div className={styles['stat-icon']}>🩸</div>
+          <div className={styles['stat-icon']}><Droplets size={28} color="var(--red)" /></div>
           <div className={styles['stat-value']}>{stats.bloodType}</div>
           <div className={styles['stat-label']}>Groupe sanguin</div>
         </Card>
 
         <Card className={styles['stat-card']}>
-          <div className={styles['stat-icon']}>✅</div>
+          <div className={styles['stat-icon']}><CheckCircle size={28} color="var(--green)" /></div>
           <div className={styles['stat-value']}>{stats.donations}</div>
           <div className={styles['stat-label']}>Dons effectués</div>
         </Card>
 
         <Card className={styles['stat-card']}>
-          <div className={styles['stat-icon']}>📋</div>
+          <div className={styles['stat-icon']}><ClipboardList size={28} color="var(--orange)" /></div>
           <div className={styles['stat-value']}>{stats.convocations}</div>
           <div className={styles['stat-label']}>Convocations en attente</div>
         </Card>
 
         <Card className={styles['stat-card']}>
-          <div className={styles['stat-icon']}>❤️</div>
+          <div className={styles['stat-icon']}><Heart size={28} color="var(--red)" /></div>
           <div className={styles['stat-value']}>{stats.liters}L</div>
           <div className={styles['stat-label']}>Litres donnés</div>
         </Card>
@@ -88,7 +90,7 @@ export default function DonneurHome() {
 
       <div className={styles['section']}>
         <div className={styles['section-header']}>
-          <h2>Mes convocations CNTS 📋</h2>
+          <h2>Mes convocations CNTS</h2>
           <Button variant="primary" size="sm" onClick={() => navigate('/donneur/requests')}>Voir tout</Button>
         </div>
 
@@ -99,7 +101,7 @@ export default function DonneurHome() {
         ) : recentConvocations.length === 0 ? (
           <Card>
             <div style={{ textAlign: 'center', padding: '24px' }}>
-              <div style={{ fontSize: '36px', marginBottom: '8px' }}>📭</div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}><Inbox size={36} color="var(--text3)" /></div>
               <p style={{ color: 'var(--text2)', margin: 0 }}>Aucune convocation pour le moment</p>
               <p style={{ color: 'var(--text3)', fontSize: '12px', margin: '4px 0 0' }}>
                 Le CNTS vous contactera quand votre don sera nécessaire.
@@ -112,7 +114,9 @@ export default function DonneurHome() {
               <Card key={conv.id} style={{ padding: '16px', borderLeft: `4px solid ${statutColor[conv.statut] || 'var(--orange)'}` }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <h4 style={{ margin: '0 0 4px 0' }}>{typeLabel[conv.type] || conv.type}</h4>
+                    <h4 style={{ margin: '0 0 4px 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      {typeIcon[conv.type]}{typeLabel[conv.type] || conv.type}
+                    </h4>
                     <p style={{ margin: 0, color: 'var(--text2)', fontSize: '12px' }}>{conv.message}</p>
                   </div>
                   <span style={{

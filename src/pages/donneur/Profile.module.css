@@ -177,6 +177,10 @@
   .form-row {
     grid-template-columns: 1fr;
   }
+
+  .actions {
+    flex-wrap: wrap;
+  }
 }
 
 @media (max-width: 480px) {
@@ -196,5 +200,22 @@
 
   .profile-header h3 {
     font-size: 16px;
+  }
+
+  .profile-stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .value {
+    font-size: 16px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions button {
+    width: 100%;
   }
 }

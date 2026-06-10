@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
+import { Home, ClipboardList, MessageCircle, User, Clock, X, PauseCircle } from 'lucide-react'
 import Navbar from '../components/layout/Navbar'
 import Sidebar from '../components/layout/Sidebar'
 import AIAssistant from '../components/common/AIAssistant'
@@ -25,10 +26,10 @@ export default function DashboardDonneur() {
     {
       label: 'Menu',
       items: [
-        { icon: '🏠', label: 'Accueil', path: '/donneur' },
-        { icon: '📋', label: 'Convocations', path: '/donneur/requests' },
-        { icon: '💬', label: 'Messages', path: '/donneur/messages', badge: unread > 0 ? unread : undefined },
-        { icon: '👤', label: 'Profil', path: '/donneur/profile' },
+        { icon: <Home size={18} />, label: 'Accueil', path: '/donneur' },
+        { icon: <ClipboardList size={18} />, label: 'Convocations', path: '/donneur/requests' },
+        { icon: <MessageCircle size={18} />, label: 'Messages', path: '/donneur/messages', badge: unread > 0 ? unread : undefined },
+        { icon: <User size={18} />, label: 'Profil', path: '/donneur/profile' },
       ]
     }
   ]
@@ -45,9 +46,9 @@ export default function DashboardDonneur() {
   }
 
   const banniereStatut = {
-    en_attente: { bg: '#FFF8E1', border: 'var(--orange)', icon: '⏳', text: 'Votre compte est en attente de validation par le CNTS. Certaines fonctionnalités sont temporairement indisponibles.' },
-    rejeté:     { bg: '#FFF5F5', border: 'var(--red)',    icon: '❌', text: 'Votre inscription a été rejetée par le CNTS. Veuillez les contacter pour plus d\'informations.' },
-    suspendu:   { bg: '#F5F5F5', border: '#999',          icon: '⏸️', text: 'Votre compte a été suspendu par le CNTS. Contactez-nous pour régulariser votre situation.' },
+    en_attente: { bg: '#FFF8E1', border: 'var(--orange)', icon: <Clock size={18} color="var(--orange)" />, text: 'Votre compte est en attente de validation par le CNTS. Certaines fonctionnalités sont temporairement indisponibles.' },
+    rejeté:     { bg: '#FFF5F5', border: 'var(--red)',    icon: <X size={18} color="var(--red)" />, text: 'Votre inscription a été rejetée par le CNTS. Veuillez les contacter pour plus d\'informations.' },
+    suspendu:   { bg: '#F5F5F5', border: '#999',          icon: <PauseCircle size={18} color="#999" />, text: 'Votre compte a été suspendu par le CNTS. Contactez-nous pour régulariser votre situation.' },
   }
   const banniere = banniereStatut[statutValidation]
 
@@ -60,7 +61,7 @@ export default function DashboardDonneur() {
           background: banniere.bg, borderLeft: `4px solid ${banniere.border}`,
           padding: '12px 20px', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '10px'
         }}>
-          <span style={{ fontSize: '18px' }}>{banniere.icon}</span>
+          {banniere.icon}
           <span>{banniere.text}</span>
         </div>
       )}

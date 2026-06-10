@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import { LogOut } from 'lucide-react'
 import styles from './Sidebar.module.css'
 
 export default function Sidebar({ isOpen, onClose, items }) {
@@ -48,7 +49,7 @@ export default function Sidebar({ isOpen, onClose, items }) {
         {/* Bouton déconnexion visible uniquement sur mobile */}
         <div className={styles['logout-mobile']}>
           <button className={styles['btn-logout']} onClick={handleLogout}>
-            🚪 Déconnexion
+            <LogOut size={16} /> Déconnexion
           </button>
         </div>
       </aside>

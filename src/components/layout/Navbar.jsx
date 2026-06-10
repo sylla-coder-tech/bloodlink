@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../../hooks/useAuth'
 import { NotificationService } from '../../services'
+import { Bell, LogOut, Droplets } from 'lucide-react'
 import styles from './Navbar.module.css'
 
 export default function Navbar({ onMenuClick }) {
@@ -64,7 +65,7 @@ export default function Navbar({ onMenuClick }) {
           <span></span>
         </button>
         <div className={styles.logo} onClick={() => window.location.href = '/'}>
-          <div className={styles['logo-icon']}>🩸</div>
+          <div className={styles['logo-icon']}><Droplets size={22} color="var(--red)" /></div>
           <span>BloodLink</span>
         </div>
       </div>
@@ -74,9 +75,9 @@ export default function Navbar({ onMenuClick }) {
           <div ref={notifRef} style={{ position: 'relative' }}>
             <button onClick={handleOpenNotifs} style={{
               background: 'none', border: 'none', cursor: 'pointer',
-              fontSize: '20px', position: 'relative', padding: '4px'
+              position: 'relative', padding: '4px', display: 'flex', alignItems: 'center'
             }}>
-              🔔
+              <Bell size={20} color="var(--text2)" />
               {nonLues > 0 && (
                 <span style={{
                   position: 'absolute', top: 0, right: 0,
@@ -128,6 +129,7 @@ export default function Navbar({ onMenuClick }) {
           <span className={styles['user-name']}>{user?.prenom || user?.nom}</span>
         </div>
         <button className={styles['btn-logout']} onClick={handleLogout}>
+          <LogOut size={16} />
           Déconnexion
         </button>
       </div>

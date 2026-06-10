@@ -1,5 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
+import {
+  BarChart2, Droplets, Building2, ClipboardList, FlaskConical,
+  Mail, MessageCircle, ScrollText, Settings, Clock, CheckCircle,
+  XCircle, PauseCircle, RefreshCw, AlertTriangle, FileText,
+  Calendar, Inbox, Info, Lock, User, ChevronRight, Send, Users
+} from 'lucide-react'
 import Navbar from '../components/layout/Navbar'
 import Sidebar from '../components/layout/Sidebar'
 import { AdminService } from '../services'
@@ -16,15 +22,15 @@ const ADMIN_MENU = [
   {
     label: 'CNTS',
     items: [
-      { icon: '📊', label: 'Dashboard', path: '/admin' },
-      { icon: '🩸', label: 'Donneurs', path: '/admin/donneurs' },
-      { icon: '🏥', label: 'Structures', path: '/admin/structures' },
-      { icon: '📋', label: 'Demandes', path: '/admin/demandes' },
-      { icon: '🧪', label: 'Stock sanguin', path: '/admin/stock' },
-      { icon: '📨', label: 'Convocations', path: '/admin/convocations' },
-      { icon: '💬', label: 'Messagerie', path: '/admin/messages' },
-      { icon: '📜', label: 'Audit', path: '/admin/audit' },
-      { icon: '⚙️', label: 'Paramètres', path: '/admin/settings' },
+      { icon: <BarChart2 size={18} />, label: 'Dashboard', path: '/admin' },
+      { icon: <Droplets size={18} />, label: 'Donneurs', path: '/admin/donneurs' },
+      { icon: <Building2 size={18} />, label: 'Structures', path: '/admin/structures' },
+      { icon: <ClipboardList size={18} />, label: 'Demandes', path: '/admin/demandes' },
+      { icon: <FlaskConical size={18} />, label: 'Stock sanguin', path: '/admin/stock' },
+      { icon: <Mail size={18} />, label: 'Convocations', path: '/admin/convocations' },
+      { icon: <MessageCircle size={18} />, label: 'Messagerie', path: '/admin/messages' },
+      { icon: <ScrollText size={18} />, label: 'Audit', path: '/admin/audit' },
+      { icon: <Settings size={18} />, label: 'Paramètres', path: '/admin/settings' },
     ]
   }
 ]
@@ -79,19 +85,19 @@ function AdminHome() {
   }, [])
 
   const cards = stats ? [
-    { icon: '🩸', label: 'Donneurs inscrits', value: stats.nbDonneurs ?? 0, color: 'var(--red)' },
-    { icon: '✅', label: 'Donneurs validés', value: stats.nbDonneursValides ?? 0, color: 'var(--green)' },
-    { icon: '⏳', label: 'Donneurs en attente', value: stats.nbDonneursAttente ?? 0, color: 'var(--orange)' },
-    { icon: '🏥', label: 'Structures validées', value: stats.nbStructures ?? 0, color: 'var(--blue)' },
-    { icon: '📋', label: 'Demandes ouvertes', value: stats.nbDemandesOuvertes ?? 0, color: 'var(--red)' },
-    { icon: '🏁', label: 'Demandes clôturées', value: stats.nbDemandesCloturees ?? 0, color: 'var(--green)' },
-    { icon: '⏳', label: 'Structures en attente', value: stats.nbEnAttente ?? 0, color: 'var(--orange)' },
-    { icon: '📈', label: 'Taux de résolution', value: `${stats.tauxResolution ?? 0}%`, color: 'var(--blue)' },
+    { icon: <Droplets size={28} />, label: 'Donneurs inscrits', value: stats.nbDonneurs ?? 0, color: 'var(--red)' },
+    { icon: <CheckCircle size={28} />, label: 'Donneurs validés', value: stats.nbDonneursValides ?? 0, color: 'var(--green)' },
+    { icon: <Clock size={28} />, label: 'Donneurs en attente', value: stats.nbDonneursAttente ?? 0, color: 'var(--orange)' },
+    { icon: <Building2 size={28} />, label: 'Structures validées', value: stats.nbStructures ?? 0, color: 'var(--blue)' },
+    { icon: <ClipboardList size={28} />, label: 'Demandes ouvertes', value: stats.nbDemandesOuvertes ?? 0, color: 'var(--red)' },
+    { icon: <CheckCircle size={28} />, label: 'Demandes clôturées', value: stats.nbDemandesCloturees ?? 0, color: 'var(--green)' },
+    { icon: <Clock size={28} />, label: 'Structures en attente', value: stats.nbEnAttente ?? 0, color: 'var(--orange)' },
+    { icon: <BarChart2 size={28} />, label: 'Taux de résolution', value: `${stats.tauxResolution ?? 0}%`, color: 'var(--blue)' },
   ] : []
 
   return (
     <div>
-      <h1 style={{ marginBottom: '8px' }}>Dashboard CNTS 📊</h1>
+      <h1 style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '10px' }}><BarChart2 size={28} /> Dashboard CNTS</h1>
       <p style={{ color: 'var(--text2)', marginBottom: '24px', fontSize: '14px' }}>
         Centre National de Transfusion Sanguine — Vue d'ensemble
       </p>
@@ -101,7 +107,7 @@ function AdminHome() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '16px' }}>
           {cards.map(c => (
             <Card key={c.label} style={{ textAlign: 'center', padding: '20px' }}>
-              <div style={{ fontSize: '28px', marginBottom: '6px' }}>{c.icon}</div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '6px', color: c.color }}>{c.icon}</div>
               <div style={{ fontSize: '26px', fontWeight: 700, color: c.color }}>{c.value}</div>
               <div style={{ color: 'var(--text2)', fontSize: '12px', marginTop: '4px' }}>{c.label}</div>
             </Card>
@@ -132,7 +138,7 @@ function AdminDonneurs() {
   const handleDecision = async (id, decision) => {
     try {
       await apiClient.put(`/admin/donneurs/${id}/valider`, { decision })
-      const labels = { valide: '✅ Donneur validé', rejete: '❌ Donneur rejeté', suspendu: '⏸️ Donneur suspendu' }
+      const labels = { valide: 'Donneur validé', rejete: 'Donneur rejeté', suspendu: 'Donneur suspendu' }
       setAlert({ type: 'success', message: labels[decision] })
       loadDonneurs()
     } catch {
@@ -141,18 +147,19 @@ function AdminDonneurs() {
   }
 
   const statutColor = { en_attente: 'var(--orange)', validé: 'var(--green)', rejeté: 'var(--red)', suspendu: '#999' }
-  const statutLabel = { en_attente: '⏳ En attente', validé: '✅ Validé', rejeté: '❌ Rejeté', suspendu: '⏸️ Suspendu' }
+  const statutLabel = { en_attente: 'En attente', validé: 'Validé', rejeté: 'Rejeté', suspendu: 'Suspendu' }
+  const statutIcon = { en_attente: <Clock size={12} />, validé: <CheckCircle size={12} />, rejeté: <XCircle size={12} />, suspendu: <PauseCircle size={12} /> }
   const filters = ['en_attente', 'validé', 'rejeté', 'suspendu']
 
   return (
     <div>
       {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} autoClose />}
-      <h1 style={{ marginBottom: '16px' }}>Gestion des donneurs 🩸</h1>
+      <h1 style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px' }}><Droplets size={28} /> Gestion des donneurs</h1>
 
       <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
         {filters.map(s => (
           <button key={s} onClick={() => setFilter(s)} className={`${adminStyles['filter-btn']} ${filter === s ? adminStyles['active'] : ''}`}>
-            {statutLabel[s]}
+            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>{statutIcon[s]} {statutLabel[s]}</span>
           </button>
         ))}
       </div>
@@ -176,31 +183,34 @@ function AdminDonneurs() {
                   </p>
                   <p style={{ margin: '2px 0 0', color: 'var(--text3)', fontSize: '12px' }}>
                     Inscrit le {new Date(d.created_at).toLocaleDateString('fr-FR')}
-                    {d.disponibilite ? ' · 🟢 Disponible' : ' · ⚫ Indisponible'}
+                    {d.disponibilite
+                      ? <span style={{ color: 'var(--green)', marginLeft: '6px' }}>● Disponible</span>
+                      : <span style={{ color: '#999', marginLeft: '6px' }}>● Indisponible</span>}
                   </p>
                 </div>
                 <span style={{
                   background: statutColor[d.statut_validation] || 'var(--orange)',
-                  color: 'white', padding: '4px 12px', borderRadius: '10px', fontSize: '12px', whiteSpace: 'nowrap'
+                  color: 'white', padding: '4px 12px', borderRadius: '10px', fontSize: '12px', whiteSpace: 'nowrap',
+                  display: 'flex', alignItems: 'center', gap: '4px'
                 }}>
-                  {statutLabel[d.statut_validation] || d.statut_validation}
+                  {statutIcon[d.statut_validation]}{statutLabel[d.statut_validation] || d.statut_validation}
                 </span>
               </div>
 
               {d.statut_validation === 'en_attente' && (
                 <div style={{ marginTop: '12px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  <Button variant="primary" size="sm" onClick={() => handleDecision(d.id, 'valide')}>✅ Valider</Button>
-                  <Button variant="ghost" size="sm" onClick={() => handleDecision(d.id, 'rejete')}>❌ Rejeter</Button>
+                  <Button variant="primary" size="sm" onClick={() => handleDecision(d.id, 'valide')}>Valider</Button>
+                  <Button variant="ghost" size="sm" onClick={() => handleDecision(d.id, 'rejete')}>Rejeter</Button>
                 </div>
               )}
               {d.statut_validation === 'validé' && (
                 <div style={{ marginTop: '12px' }}>
-                  <Button variant="ghost" size="sm" onClick={() => handleDecision(d.id, 'suspendu')}>⏸️ Suspendre</Button>
+                  <Button variant="ghost" size="sm" onClick={() => handleDecision(d.id, 'suspendu')}>Suspendre</Button>
                 </div>
               )}
               {d.statut_validation === 'suspendu' && (
                 <div style={{ marginTop: '12px' }}>
-                  <Button variant="primary" size="sm" onClick={() => handleDecision(d.id, 'valide')}>🔄 Réactiver</Button>
+                  <Button variant="primary" size="sm" onClick={() => handleDecision(d.id, 'valide')}>Réactiver</Button>
                 </div>
               )}
             </Card>
@@ -232,7 +242,7 @@ function AdminStructures() {
   const handleDecision = async (id, decision) => {
     try {
       await AdminService.validerStructure(id, decision, motifRefus[id] || '')
-      setAlert({ type: 'success', message: decision === 'valide' ? '✅ Structure validée' : '❌ Structure refusée' })
+      setAlert({ type: 'success', message: decision === 'valide' ? 'Structure validée' : 'Structure refusée' })
       loadStructures()
     } catch {
       setAlert({ type: 'error', message: 'Erreur lors de la décision' })
@@ -240,17 +250,18 @@ function AdminStructures() {
   }
 
   const statutColor = { en_attente: 'var(--orange)', valide: 'var(--green, #1E8449)', refuse: 'var(--red)' }
-  const statutLabel = { en_attente: '⏳ En attente', valide: '✅ Validée', refuse: '❌ Refusée' }
+  const statutLabel = { en_attente: 'En attente', valide: 'Validée', refuse: 'Refusée' }
+  const statutIcon = { en_attente: <Clock size={12} />, valide: <CheckCircle size={12} />, refuse: <XCircle size={12} /> }
 
   return (
     <div>
       {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} autoClose />}
-      <h1 style={{ marginBottom: '16px' }}>Validation des structures 🏥</h1>
+      <h1 style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px' }}><Building2 size={28} /> Validation des structures</h1>
 
       <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
         {['en_attente', 'valide', 'refuse'].map(s => (
           <button key={s} onClick={() => setFilter(s)} className={`${adminStyles['filter-btn']} ${filter === s ? adminStyles['active'] : ''}`}>
-            {statutLabel[s]}
+            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>{statutIcon[s]} {statutLabel[s]}</span>
           </button>
         ))}
       </div>
@@ -280,9 +291,10 @@ function AdminStructures() {
                 </div>
                 <span style={{
                   background: statutColor[s.statut_validation], color: 'white',
-                  padding: '4px 12px', borderRadius: '10px', fontSize: '12px', whiteSpace: 'nowrap'
+                  padding: '4px 12px', borderRadius: '10px', fontSize: '12px', whiteSpace: 'nowrap',
+                  display: 'flex', alignItems: 'center', gap: '4px'
                 }}>
-                  {statutLabel[s.statut_validation]}
+                  {statutIcon[s.statut_validation]}{statutLabel[s.statut_validation]}
                 </span>
               </div>
 
@@ -298,10 +310,10 @@ function AdminStructures() {
                     }}
                   />
                   <Button variant="primary" size="sm" onClick={() => handleDecision(s.id, 'valide')}>
-                    ✅ Valider
+                    Valider
                   </Button>
                   <Button variant="ghost" size="sm" onClick={() => handleDecision(s.id, 'refuse')}>
-                    ❌ Refuser
+                    Refuser
                   </Button>
                 </div>
               )}
@@ -346,7 +358,7 @@ function AdminDemandes() {
         motif: `Demande structure ${demande.structures?.nom || demande.structure_id}`
       })
       await apiClient.put(`/admin/demandes/${demande.id}/statut`, { statut: 'clôturée' })
-      setAlert({ type: 'success', message: `✅ Stock utilisé pour ${demande.groupe_sanguin} — demande clôturée` })
+      setAlert({ type: 'success', message: `Stock utilisé pour ${demande.groupe_sanguin} — demande clôturée` })
       setDemandes(prev => prev.map(d => d.id === demande.id ? { ...d, statut: 'cloturee' } : d))
       setStock(prev => prev.map(s => s.groupe_sanguin === demande.groupe_sanguin
         ? { ...s, quantite: s.quantite - demande.quantite } : s))
@@ -359,7 +371,7 @@ function AdminDemandes() {
     setActionId(demande.id)
     try {
       // 1. Envoyer un message à tous les donneurs compatibles
-      const contenu = `🩸 Besoin urgent de sang ${demande.groupe_sanguin} — ${demande.quantite} poche(s) à ${demande.commune}. Urgence : ${demande.urgence}. Contactez le CNTS si vous êtes disponible.`
+      const contenu = `Besoin urgent de sang ${demande.groupe_sanguin} — ${demande.quantite} poche(s) à ${demande.commune}. Urgence : ${demande.urgence}. Contactez le CNTS si vous êtes disponible.`
       const { data: broadcastData } = await apiClient.post('/messages/broadcast', {
         groupe_sanguin: demande.groupe_sanguin,
         contenu
@@ -368,7 +380,7 @@ function AdminDemandes() {
       await apiClient.put(`/admin/demandes/${demande.id}/statut`, { statut: 'clôturée' })
       setDemandes(prev => prev.map(d => d.id === demande.id ? { ...d, statut: 'clôturée' } : d))
       const nb = broadcastData?.envoyes ?? 0
-      setAlert({ type: 'success', message: `✅ Message envoyé à ${nb} donneur(s) ${demande.groupe_sanguin} — demande clôturée` })
+      setAlert({ type: 'success', message: `Message envoyé à ${nb} donneur(s) ${demande.groupe_sanguin} — demande clôturée` })
     } catch (err) {
       setAlert({ type: 'error', message: err.response?.data?.message || 'Erreur lors du contact' })
     } finally { setActionId(null) }
@@ -380,7 +392,7 @@ function AdminDemandes() {
   return (
     <div>
       {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} autoClose />}
-      <h1 style={{ marginBottom: '8px' }}>Demandes des structures 📋</h1>
+      <h1 style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '10px' }}><ClipboardList size={28} /> Demandes des structures</h1>
       <p style={{ color: 'var(--text2)', fontSize: '14px', marginBottom: '20px' }}>
         Les structures soumettent leurs besoins au CNTS. Vous décidez de la réponse.
       </p>
@@ -425,14 +437,14 @@ function AdminDemandes() {
                       disabled={!peutUtiliserStock || actionId === d.id}
                       onClick={() => utiliserStock(d)}
                     >
-                      🧪 Utiliser le stock
+                      <FlaskConical size={14} /> Utiliser le stock
                     </Button>
                     <Button
                       variant="ghost" size="sm"
                       disabled={actionId === d.id}
                       onClick={() => contacterDonneurs(d)}
                     >
-                      🩸 Contacter donneurs
+                      <Droplets size={14} /> Contacter donneurs
                     </Button>
                   </div>
                 )}
@@ -467,7 +479,7 @@ function AdminStock() {
     setSaving(true)
     try {
       await apiClient.put('/stock/update', form)
-      setAlert({ type: 'success', message: `✅ Stock mis à jour` })
+      setAlert({ type: 'success', message: `Stock mis à jour` })
       setForm(f => ({ ...f, quantite: '', motif: '' }))
       loadStock()
     } catch (err) {
@@ -481,7 +493,7 @@ function AdminStock() {
   return (
     <div>
       {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} autoClose />}
-      <h1 style={{ marginBottom: '24px' }}>Stock sanguin 🧪</h1>
+      <h1 style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}><FlaskConical size={28} /> Stock sanguin</h1>
 
       <div style={{ display: 'grid', gap: '20px', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
 
@@ -505,7 +517,7 @@ function AdminStock() {
                         {s.quantite}
                       </span>
                       <span style={{ color: 'var(--text3)', fontSize: '12px', marginLeft: '4px' }}>poches</span>
-                      {alerte && <div style={{ color: 'var(--red)', fontSize: '11px' }}>⚠️ Stock bas</div>}
+                      {alerte && <div style={{ color: 'var(--red)', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '3px' }}><AlertTriangle size={11} /> Stock bas</div>}
                     </div>
                   </div>
                 )
@@ -525,8 +537,8 @@ function AdminStock() {
 
             <label style={{ fontSize: '13px', color: 'var(--text2)' }}>Opération</label>
             <select value={form.operation} onChange={e => setForm(f => ({ ...f, operation: e.target.value }))} style={{ ...inputStyle, marginTop: '4px', marginBottom: '12px' }}>
-              <option value="ajout">➕ Ajout (don reçu)</option>
-              <option value="sortie">➖ Sortie (livraison)</option>
+              <option value="ajout">Ajout (don reçu)</option>
+              <option value="sortie">Sortie (livraison)</option>
             </select>
 
             <label style={{ fontSize: '13px', color: 'var(--text2)' }}>Quantité (poches)</label>
@@ -564,11 +576,11 @@ function AdminAudit() {
   }, [filter])
 
   const actionLabel = {
-    structure_valide: '✅ Structure validée',
-    structure_refuse: '❌ Structure refusée',
-    donneur_valide: '✅ Donneur validé',
-    donneur_rejete: '❌ Donneur rejeté',
-    donneur_suspendu: '⏸️ Donneur suspendu',
+    structure_valide: 'Structure validée',
+    structure_refuse: 'Structure refusée',
+    donneur_valide: 'Donneur validé',
+    donneur_rejete: 'Donneur rejeté',
+    donneur_suspendu: 'Donneur suspendu',
   }
   const actionColor = {
     structure_valide: 'var(--green)', structure_refuse: 'var(--red)',
@@ -577,9 +589,9 @@ function AdminAudit() {
 
   return (
     <div>
-      <h1 style={{ marginBottom: '16px' }}>Journal d'audit 📜</h1>
+      <h1 style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px' }}><ScrollText size={28} /> Journal d'audit</h1>
       <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
-        {[['', 'Tout'], ['donneur', '🩸 Donneurs'], ['structure', '🏥 Structures']].map(([val, label]) => (
+        {[['', 'Tout'], ['donneur', 'Donneurs'], ['structure', 'Structures']].map(([val, label]) => (
           <button key={val} onClick={() => setFilter(val)} className={`${adminStyles['filter-btn']} ${filter === val ? adminStyles['active'] : ''}`}>{label}</button>
         ))}
       </div>
@@ -640,7 +652,7 @@ function AdminSettings() {
         ancien_mdp: pwForm.ancien_mdp,
         nouveau_mdp: pwForm.nouveau_mdp
       })
-      setAlert({ type: 'success', message: '✅ Mot de passe mis à jour avec succès' })
+      setAlert({ type: 'success', message: 'Mot de passe mis à jour avec succès' })
       setPwForm({ ancien_mdp: '', nouveau_mdp: '', confirm_mdp: '' })
     } catch (err) {
       setAlert({ type: 'error', message: err.response?.data?.message || 'Erreur lors du changement de mot de passe' })
@@ -658,13 +670,13 @@ function AdminSettings() {
   return (
     <div>
       {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} autoClose />}
-      <h1 style={{ marginBottom: '24px' }}>Paramètres ⚙️</h1>
+      <h1 style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}><Settings size={28} /> Paramètres</h1>
 
       <div style={{ display: 'grid', gap: '20px', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
 
         {/* Profil admin */}
         <Card style={{ padding: '20px' }}>
-          <h3 style={{ marginBottom: '16px' }}>👤 Mon profil</h3>
+          <h3 style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}><User size={18} /> Mon profil</h3>
           {loadingProfile ? (
             <p style={{ color: 'var(--text3)', fontSize: '14px' }}>Chargement...</p>
           ) : profile ? (
@@ -672,7 +684,7 @@ function AdminSettings() {
               {[
                 { label: 'Nom', value: profile.nom || '—' },
                 { label: 'Email', value: profile.email },
-                { label: 'Rôle', value: '🔑 Administrateur' },
+                { label: 'Rôle', value: 'Administrateur' },
                 { label: 'Membre depuis', value: profile.created_at ? new Date(profile.created_at).toLocaleDateString('fr-FR') : '—' }
               ].map(({ label, value }) => (
                 <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--border)' }}>
@@ -688,7 +700,7 @@ function AdminSettings() {
 
         {/* Changer mot de passe */}
         <Card style={{ padding: '20px' }}>
-          <h3 style={{ marginBottom: '16px' }}>🔒 Changer le mot de passe</h3>
+          <h3 style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}><Lock size={18} /> Changer le mot de passe</h3>
           <form onSubmit={handleChangePassword}>
             {[
               { key: 'ancien_mdp', label: 'Mot de passe actuel' },
@@ -751,7 +763,7 @@ function AdminConvocations() {
     setSending(true)
     try {
       await apiClient.post('/stock/convoquer', form)
-      setAlert({ type: 'success', message: '✅ Convocation envoyée avec succès' })
+      setAlert({ type: 'success', message: 'Convocation envoyée avec succès' })
       setForm({ donneur_id: '', type: 'renouvellement', message: '', date_rdv: '' })
     } catch (err) {
       setAlert({ type: 'error', message: err.response?.data?.message || 'Erreur lors de l\'envoi' })
@@ -764,7 +776,7 @@ function AdminConvocations() {
     setValidating(convId)
     try {
       await apiClient.post(`/admin/convocations/${convId}/valider-don`)
-      setAlert({ type: 'success', message: `✅ Don de ${donneurNom} validé — nb_dons mis à jour` })
+      setAlert({ type: 'success', message: `Don de ${donneurNom} validé — nb_dons mis à jour` })
       setConvocations(prev => prev.map(c => c.id === convId ? { ...c, statut: 'don_effectue' } : c))
     } catch (err) {
       setAlert({ type: 'error', message: err.response?.data?.message || 'Erreur lors de la validation' })
@@ -782,7 +794,7 @@ function AdminConvocations() {
       const nb = filterGroupe
         ? donneurs.filter(d => d.groupe_sanguin === filterGroupe).length
         : donneurs.length
-      setAlert({ type: 'success', message: `✅ Message envoyé à ${nb} donneur(s)` })
+      setAlert({ type: 'success', message: `Message envoyé à ${nb} donneur(s)` })
       setForm(f => ({ ...f, message: '' }))
     } catch (err) {
       setAlert({ type: 'error', message: 'Erreur lors du broadcast' })
@@ -793,14 +805,14 @@ function AdminConvocations() {
 
   const inputStyle = { width: '100%', padding: '8px 12px', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '14px', marginTop: '4px', marginBottom: '12px' }
   const bloodTypes = ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-']
-  const typeLabel = { renouvellement: '🔄 Renouvellement de stock', urgence: '🚨 Urgence', autre: '📋 Autre' }
+  const typeLabel = { renouvellement: 'Renouvellement de stock', urgence: 'Urgence', autre: 'Autre' }
 
   const donneursFiltered = filterGroupe ? donneurs.filter(d => d.groupe_sanguin === filterGroupe) : donneurs
 
   return (
     <div>
       {alert && <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} autoClose />}
-      <h1 style={{ marginBottom: '8px' }}>Convocations donneurs 📨</h1>
+      <h1 style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '10px' }}><Mail size={28} /> Convocations donneurs</h1>
       <p style={{ color: 'var(--text2)', fontSize: '14px', marginBottom: '20px' }}>
         Convoquez des donneurs individuellement ou par groupe sanguin.
       </p>
@@ -809,7 +821,7 @@ function AdminConvocations() {
 
         {/* Convocation individuelle */}
         <Card style={{ padding: '20px' }}>
-          <h3 style={{ marginBottom: '16px' }}>📨 Convoquer un donneur</h3>
+          <h3 style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}><Mail size={18} /> Convoquer un donneur</h3>
           <form onSubmit={handleEnvoyer}>
             <label style={{ fontSize: '13px', color: 'var(--text2)' }}>Donneur</label>
             <select value={form.donneur_id} onChange={e => setForm(f => ({ ...f, donneur_id: e.target.value }))} style={inputStyle} required>
@@ -842,14 +854,14 @@ function AdminConvocations() {
             <input type="datetime-local" value={form.date_rdv} onChange={e => setForm(f => ({ ...f, date_rdv: e.target.value }))} style={inputStyle} />
 
             <Button type="submit" variant="primary" style={{ width: '100%' }} disabled={sending}>
-              {sending ? 'Envoi...' : '📨 Envoyer la convocation'}
+              {sending ? 'Envoi...' : 'Envoyer la convocation'}
             </Button>
           </form>
         </Card>
 
         {/* Broadcast par groupe sanguin */}
         <Card style={{ padding: '20px' }}>
-          <h3 style={{ marginBottom: '16px' }}>📢 Message groupé</h3>
+          <h3 style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}><Users size={18} /> Message groupé</h3>
           <p style={{ color: 'var(--text3)', fontSize: '13px', marginBottom: '12px' }}>
             Envoyez un message à tous les donneurs validés, ou filtrez par groupe sanguin.
           </p>
@@ -883,7 +895,7 @@ function AdminConvocations() {
           />
 
           <Button variant="primary" style={{ width: '100%' }} onClick={handleBroadcast} disabled={sending || !form.message}>
-            {sending ? 'Envoi...' : `📢 Envoyer à ${donneursFiltered.length} donneur(s)`}
+            {sending ? 'Envoi...' : `Envoyer à ${donneursFiltered.length} donneur(s)`}
           </Button>
         </Card>
       </div>
@@ -922,15 +934,15 @@ function AdminConvocations() {
 
       {/* Réponses aux convocations */}
       <div style={{ marginTop: '32px' }}>
-        <h3 style={{ marginBottom: '12px' }}>Réponses aux convocations 📬</h3>
+        <h3 style={{ marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}><Mail size={18} /> Réponses aux convocations</h3>
         {convocations.length === 0 ? (
           <Card><p style={{ textAlign: 'center', padding: '20px', color: 'var(--text3)' }}>Aucune convocation envoyée</p></Card>
         ) : (
           <div style={{ display: 'grid', gap: '8px' }}>
             {convocations.map(conv => {
               const statutColor = { en_attente: 'var(--orange)', confirmée: 'var(--green)', refusée: 'var(--red)', don_effectue: 'var(--blue)' }
-              const statutIcon = { en_attente: '⏳', confirmée: '✅', refusée: '❌', don_effectue: '🩸' }
-              const typeLabel = { renouvellement: '🔄 Renouvellement', urgence: '🚨 Urgence', autre: '📋 Autre' }
+              const statutIcon = { en_attente: <Clock size={12} />, confirmée: <CheckCircle size={12} />, refusée: <XCircle size={12} />, don_effectue: <Droplets size={12} /> }
+              const typeLabel = { renouvellement: 'Renouvellement', urgence: 'Urgence', autre: 'Autre' }
               const donneur = conv.donneurs
               const donneurNom = donneur ? `${donneur.prenom} ${donneur.nom}` : 'Donneur inconnu'
               return (
@@ -949,8 +961,8 @@ function AdminConvocations() {
                         {typeLabel[conv.type] || conv.type} — {conv.message}
                       </p>
                       {conv.date_rdv && (
-                        <p style={{ margin: 0, color: 'var(--text3)', fontSize: '11px' }}>
-                          📅 {new Date(conv.date_rdv).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        <p style={{ margin: 0, color: 'var(--text3)', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <Calendar size={11} /> {new Date(conv.date_rdv).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
                         </p>
                       )}
                       <p style={{ margin: '2px 0 0', color: 'var(--text3)', fontSize: '11px' }}>
@@ -959,7 +971,8 @@ function AdminConvocations() {
                     </div>
                     <span style={{
                       background: statutColor[conv.statut] || 'var(--orange)',
-                      color: 'white', padding: '4px 12px', borderRadius: '10px', fontSize: '12px', whiteSpace: 'nowrap'
+                      color: 'white', padding: '4px 12px', borderRadius: '10px', fontSize: '12px', whiteSpace: 'nowrap',
+                      display: 'flex', alignItems: 'center', gap: '4px'
                     }}>
                       {statutIcon[conv.statut]} {conv.statut}
                     </span>
@@ -971,7 +984,7 @@ function AdminConvocations() {
                         disabled={validating === conv.id}
                         onClick={() => handleValiderDon(conv.id, donneurNom)}
                       >
-                        {validating === conv.id ? 'Validation...' : '🩸 Valider le don'}
+                        {validating === conv.id ? 'Validation...' : 'Valider le don'}
                       </Button>
                     </div>
                   )}
@@ -1099,18 +1112,18 @@ function AdminMessagerie() {
   }
 
   const filtered = tab === 'all' ? conversations : conversations.filter(c => c.interlocuteur_type === tab)
-  const typeIcon = { donneur: '🩸', structure: '🏥' }
+  const typeIcon = { donneur: <Droplets size={10} />, structure: <Building2 size={10} /> }
   const typeLabel = { donneur: 'Donneur', structure: 'Structure' }
 
   return (
     <div>
-      <h1 className={adminStyles['page-title']}>Messagerie CNTS 💬</h1>
+      <h1 className={adminStyles['page-title']} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}><MessageCircle size={28} /> Messagerie CNTS</h1>
       <p className={adminStyles['page-subtitle']}>
         Communiquez avec les donneurs et les structures de santé.
       </p>
 
       <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
-        {[['all', '📬 Tous'], ['donneur', '🩸 Donneurs'], ['structure', '🏥 Structures']].map(([val, label]) => (
+        {[['all', 'Tous'], ['donneur', 'Donneurs'], ['structure', 'Structures']].map(([val, label]) => (
           <button key={val} onClick={() => setTab(val)} className={`${adminStyles['filter-btn']} ${tab === val ? adminStyles['active'] : ''}`}>{label}</button>
         ))}
       </div>
@@ -1119,8 +1132,8 @@ function AdminMessagerie() {
         {/* Liste conversations */}
         <div className={adminStyles['msg-sidebar']}>
           {matchGroupe && (
-            <div style={{ background: '#FEF9E7', border: '1px solid #F9CA24', borderRadius: '8px', padding: '8px 12px', fontSize: '12px', color: '#7D6608' }}>
-              🩸 Donneurs compatibles <strong>{matchGroupe}</strong> mis en avant
+            <div style={{ background: '#FEF9E7', border: '1px solid #F9CA24', borderRadius: '8px', padding: '8px 12px', fontSize: '12px', color: '#7D6608', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Droplets size={12} /> Donneurs compatibles <strong>{matchGroupe}</strong> mis en avant
             </div>
           )}
           {loading ? (
@@ -1166,8 +1179,8 @@ function AdminMessagerie() {
                             {typeIcon[conv.interlocuteur_type]} {typeLabel[conv.interlocuteur_type] || conv.interlocuteur_type}
                           </span>
                           {isCompatible && (
-                            <span style={{ fontSize: '10px', color: 'white', padding: '1px 6px', borderRadius: '8px', background: 'var(--green)' }}>
-                              ✓ Compatible
+                            <span style={{ fontSize: '10px', color: 'white', padding: '1px 6px', borderRadius: '8px', background: 'var(--green)', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                              <CheckCircle size={10} /> Compatible
                             </span>
                           )}
                         </div>
@@ -1217,7 +1230,7 @@ function AdminMessagerie() {
               <div style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {messages.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text3)' }}>
-                    <div style={{ fontSize: '36px', marginBottom: '8px' }}>💬</div>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}><MessageCircle size={36} color="var(--text3)" /></div>
                     <p>Aucun message. Commencez la conversation.</p>
                   </div>
                 ) : (
@@ -1265,7 +1278,7 @@ function AdminMessagerie() {
             </>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text3)' }}>
-              <div style={{ fontSize: '48px', marginBottom: '12px' }}>💬</div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}><MessageCircle size={48} color="var(--text3)" /></div>
               <p>Sélectionnez une conversation</p>
             </div>
           )}

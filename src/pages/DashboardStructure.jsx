@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
+import { Home, ClipboardList, MessageCircle, Settings, Clock } from 'lucide-react'
 import Navbar from '../components/layout/Navbar'
 import Sidebar from '../components/layout/Sidebar'
 import AIAssistant from '../components/common/AIAssistant'
@@ -22,10 +23,10 @@ export default function DashboardStructure() {
     {
       label: 'Menu',
       items: [
-        { icon: '🏠', label: 'Accueil', path: '/structure' },
-        { icon: '📋', label: 'Mes demandes', path: '/structure/demands' },
-        { icon: '💬', label: 'Messages CNTS', path: '/structure/messages', badge: unread > 0 ? unread : undefined },
-        { icon: '⚙️', label: 'Paramètres', path: '/structure/settings' },
+        { icon: <Home size={18} />, label: 'Accueil', path: '/structure' },
+        { icon: <ClipboardList size={18} />, label: 'Mes demandes', path: '/structure/demands' },
+        { icon: <MessageCircle size={18} />, label: 'Messages CNTS', path: '/structure/messages', badge: unread > 0 ? unread : undefined },
+        { icon: <Settings size={18} />, label: 'Paramètres', path: '/structure/settings' },
       ]
     }
   ]
@@ -37,9 +38,10 @@ export default function DashboardStructure() {
         <div style={{
           background: '#FFF3CD', borderBottom: '1px solid #FFEAA7',
           padding: '10px 24px', textAlign: 'center',
-          color: '#856404', fontSize: '14px'
+          color: '#856404', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
         }}>
-          ⏳ Votre compte est <strong>en attente de validation</strong> par l'administrateur. Certaines fonctionnalités sont limitées jusqu'à validation.
+          <Clock size={16} color="#856404" />
+          Votre compte est <strong>en attente de validation</strong> par l'administrateur. Certaines fonctionnalités sont limitées jusqu'à validation.
         </div>
       )}
       

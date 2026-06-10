@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { StructureService } from '../../services'
+import { ClipboardList, CheckCircle } from 'lucide-react'
 import Card from '../../components/common/Card'
 import Button from '../../components/common/Button'
 import Input from '../../components/common/Input'
@@ -42,7 +43,7 @@ export default function StructureDemands() {
     setSubmitting(true)
     try {
       await StructureService.createDemand(formData)
-      setAlert({ type: 'success', message: '✅ Demande publiée avec succès!' })
+      setAlert({ type: 'success', message: 'Demande publiée avec succès!' })
       setShowForm(false)
       setFormData({ groupe_sanguin: 'O+', quantite: '', urgence: 'moyenne', commune: '', date_limite: '', notes: '' })
       loadDemands()
@@ -57,7 +58,7 @@ export default function StructureDemands() {
   const handleClose = async (id) => {
     try {
       await StructureService.closeDemand(id)
-      setAlert({ type: 'success', message: '✅ Demande clôturée' })
+      setAlert({ type: 'success', message: 'Demande clôturée' })
       loadDemands()
     } catch (err) {
       setAlert({ type: 'error', message: 'Erreur lors de la clôture' })
@@ -73,7 +74,7 @@ export default function StructureDemands() {
       )}
 
       <div className={styles['page-header']}>
-        <h1>Mes demandes 📋</h1>
+        <h1 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}><ClipboardList size={28} /> Mes demandes</h1>
         <p>Gère tes demandes de sang</p>
       </div>
 
