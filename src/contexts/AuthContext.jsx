@@ -34,7 +34,11 @@ export function AuthProvider({ children }) {
           localStorage.removeItem(CACHE_KEY)
         }
       })
-      .catch(() => {})
+      .catch(() => {
+        localStorage.removeItem(CACHE_KEY)
+        setUser(null)
+        setRole(null)
+      })
       .finally(() => setLoading(false))
   }, [])
 

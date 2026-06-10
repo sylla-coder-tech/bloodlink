@@ -8,11 +8,15 @@ const apiClient = axios.create({
   withCredentials: true  // envoie le cookie HttpOnly automatiquement
 })
 
-// Intercepteur 401 — rediriger vers login
+// Intercepteur 401 — rediriger vers login (sauf pour /auth/me et /auth/login)
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const url = error.config?.url || ''
+    const is401 = error.response?.status === 401
+    const isAuthRoute = url.includes('/auth/me') || url.includes('/auth/login')
+
+    if (is401 && !isAuthRoute && window.location.pathname !== '/login') {
       window.location.href = '/login'
     }
     return Promise.reject(error)
