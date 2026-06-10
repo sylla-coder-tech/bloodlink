@@ -49,11 +49,7 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Autoriser sans origin (Thunder Client, Postman en dev uniquement)
-    if (!origin && process.env.NODE_ENV !== 'production') {
-      return callback(null, true);
-    }
-    if (origin && allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
     callback(new Error(`Origine non autorisée : ${origin}`));

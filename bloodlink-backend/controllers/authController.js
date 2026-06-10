@@ -121,8 +121,8 @@ async function login(req, res) {
 
     const cookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: true,
+      sameSite: 'none',
       maxAge: 7 * 24 * 60 * 60 * 1000 // 7 jours en ms
     };
 
@@ -173,7 +173,7 @@ async function logout(req, res) {
       jwtBlacklist.add(token);
     }
 
-    res.clearCookie('bl_token', { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
+    res.clearCookie('bl_token', { httpOnly: true, secure: true, sameSite: 'none' });
     return res.json({ success: true, message: 'Déconnecté' });
   } catch (err) {
     console.error('logout:', err.message);
